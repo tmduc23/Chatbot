@@ -26,4 +26,6 @@ app.add_middleware(
     allow_methods=["*"],        # cho phép tất cả các phương thức HTTP (GET, POST, PUT, DELETE, ...)
     allow_headers=["*"],        # cho phép  Header chứa các thông tin bổ sung của HTTP request.
 )
+
+# đăng ký tất cả các API trong health router vào FastAPI application
 app.include_router(health_router)
