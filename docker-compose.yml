@@ -24,6 +24,8 @@ services:
       - ./backend/app:/app/app
       - ./backend/alembic:/app/alembic
       - ./backend/tests:/app/tests
+      - ./scripts:/app/scripts
+      - ./data:/app/data
       - ./storage:/app/storage
     depends_on:
       postgres:

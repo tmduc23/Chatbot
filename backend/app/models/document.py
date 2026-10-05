@@ -1,5 +1,5 @@
 """
-Model Document dùng để quản ly tài liệu mà người dùng 
+Model Document dùng để quản lý tài liệu mà người dùng 
 upload lên hệ thống RAG. Mỗi document thuộc một application,
 và được xử lý theo pipeline: upload -> lưu file -> chunking -> embedding -> lưu chunks -> dùng cho retrieval
 
