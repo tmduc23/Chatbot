@@ -61,8 +61,12 @@ def _split_sentences(text: str) -> list[str]:
     _split_sentences("Tôi dùng Python. GPA 3.6 trên 4!\\nDòng mới")
     ['Tôi dùng Python. ', 'GPA 3.6 trên 4!\\n', 'Dòng mới']
     """
-    pieces: list[str] = []
+    pieces: list[str] = []  
     start = 0
+
+    # finditer() sẽ tìm tất cả các vị trí mà regex khớp 
+    # m là 1 match object
+    # Lấy từ start đến match hiện tại
     for m in _SENTENCE_BOUNDARY.finditer(text):
         pieces.append(text[start:m.end()])   # câu + khoảng trắng/xuống dòng ngay sau nó
         start = m.end()
@@ -97,6 +101,7 @@ def _overlap_tail(text: str, budget: int, counter: TokenCounter) -> str:
             break                                      # thêm câu này sẽ vượt budget -> dừng
         tail = candidate
     return tail
+
 def _hard_split(text: str, max_tokens: int, counter: TokenCounter) -> list[str]:
     """Cắt theo ký tự, mỗi mảnh dài nhất có thể mà vẫn <+ max_tokens (tìm kiếm nhị phân)."""
     pieces: list[str] = []
@@ -113,6 +118,15 @@ def _hard_split(text: str, max_tokens: int, counter: TokenCounter) -> list[str]:
         start = lo
     return pieces
 
+# Mục đích nhận 1 đoạn text, nếu quá dài thì tìm cách chia nhỏ các unit, ưu tiên chia ở ranh giới tự nhiên 
+"""
+Logic (đệ quy):
+      (1) Text đã vừa?  -> trả về nguyên text, KHÔNG tách gì thêm.
+      (2) Chưa vừa: lấy dấu phân cách TO NHẤT có xuất hiện trong text, tách theo nó.
+          Mỗi mảnh vừa tách lại được xử lý ĐỆ QUY, nhưng chỉ với các dấu NHỎ HƠN
+          (separators[i + 1:]) -> không bao giờ tách lại theo dấu đã dùng.
+      (3) Hết dấu phân cách mà vẫn quá dài -> _hard_split.
+"""
 def _split_into_units(
     text: str, max_tokens: int, counter: TokenCounter, separators: tuple[str, ...] = SEPARATORS
 ) -> list[str]:
@@ -122,33 +136,47 @@ def _split_into_units(
         if sep in text:
             units: list[str] = []
             for piece in _split_keep_separator(text, sep):
-                units.extend(_split_into_units(piece, max_tokens, counter, separators[i + 1:]))
+                units.extend(_split_into_units(piece, max_tokens, counter, separators[i + 1:]))      # Đệ quy quá dài thì lại tách tiếp
             return units
-    return _hard_split(text, max_tokens, counter)
+    return _hard_split(text, max_tokens, counter)       # tách cuối cùng là tách theo ký tự
+
+"""
+Gộp các unit liên tiếp thành chunk <= chunk_size token, có overlap giữa 2 chunk liền nhau.
+
+    Ý tưởng "CỬA SỔ TRƯỢT" (sliding window):
+      - `window` chứa các unit của chunk đang gom; `total` = tổng token trong window.
+      - Lần lượt thêm từng unit vào window.
+      - Nếu thêm unit mới sẽ VƯỢT chunk_size:
+          (a) "Đóng" window hiện tại thành 1 chunk.
+          (b) Bỏ bớt unit ở ĐẦU window, chỉ giữ phần ĐUÔI <= chunk_overlap token
+              -> phần đuôi này thành phần mở đầu (overlap) của chunk tiếp theo.
+          (c) Thêm unit mới vào và tiếp tục.
+"""
 
 def _merge_units(units: list[str], chunk_size: int, chunk_overlap: int, counter: TokenCounter) -> list[str]:
     chunks: list[str] = []
-    window: list[tuple[str, int]] = []   # các phần của chunk đang gom, kèm số token của từng phần
+    window: list[tuple[str, int]] = []   # (text_chung, số token)
     total = 0                            # tổng token trong window (cộng dồn, không phải đếm lại)
+
 
     for unit in units:
         n = counter.count(unit)          # đếm token của unit này đúng 1 lần
 
-        if window and total + n > chunk_size:
+        if window and total + n > chunk_size:           # kiểm tra window có nội dung hay chưa và thêm unit mới sẽ vượt token
             # (a) Thêm unit này sẽ vượt giới hạn -> đóng window hiện tại thành 1 chunk.
-            chunk_text = "".join(u for u, _ in window)
+            chunk_text = "".join(u for u, _ in window)      # 1 chunk
             chunks.append(chunk_text)
 
             # (b) Overlap = các CÂU cuối của chunk vừa đóng, tổng không vượt `budget`:
             #     - <= chunk_overlap          -> overlap không quá lớn
             #     - <= chunk_size - n         -> overlap + unit mới vẫn vừa 1 chunk
             budget = min(chunk_overlap, chunk_size - n)
-            tail = _overlap_tail(chunk_text, budget, counter)
-            window = [(tail, counter.count(tail))] if tail else []
-            total = window[0][1] if window else 0
+            tail = _overlap_tail(chunk_text, budget, counter)       # xét ngược chunktext, lấy tail mơi 
+            window = [(tail, counter.count(tail))] if tail else []  # window mới gồm thành phần overlap
+            total = window[0][1] if window else 0                   # tổng số token trong window mới, số token overlap
 
         # (c) Thêm unit mới vào window (chunk mới, hoặc chunk đang gom dở).
-        window.append((unit, n))
+        window.append((unit, n))        # thêm unit mới và số token của unit
         total += n
 
     if window:                           # còn nội dung trong window -> chunk cuối cùng
@@ -164,10 +192,10 @@ def split_text(text: str, chunk_size: int, chunk_overlap: int, counter: TokenCou
         raise ValueError("chunk_size must be > 0")
     if not 0 <= chunk_overlap < chunk_size:
         raise ValueError("chunk_overlap must be >= 0 and < chunk_size")
-    if not text.strip():
+    if not text.strip():        # text rỗng -> không chunk
         return []
-    units = _split_into_units(text, chunk_size, counter)
-    return _merge_units(units, chunk_size, chunk_overlap, counter)
+    units = _split_into_units(text, chunk_size, counter)    # chia unit
+    return _merge_units(units, chunk_size, chunk_overlap, counter)  # hợp thành các chunk
 
 
 def chunk_pages(

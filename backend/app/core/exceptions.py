@@ -27,3 +27,6 @@ class DuplicateDocumentError(IngestionError):
 
 class EmptyDocumentError(IngestionError):
     """Không trích được chữ nào (vd. PDF scan dạng ảnh).  -> HTTP 422"""
+
+class EmbeddingError(AppError):
+    """Gọi embedding provider thất bại (sai API key, hết quota, mạng...). -> HTTP 429/502/503"""

@@ -26,7 +26,8 @@ from app.core.exceptions import (
     ApplicationNotFoundError, DuplicateDocumentError, EmptyDocumentError, UnsupportedFileTypeError,
 )
 from app.db.session import SessionLocal
-from app.models import Application, DocumentStatus
+from app.models import EMBEDDING_DIM, Application, DocumentStatus
+from app.rag.embeddings.fake import FakeEmbeddingProvider
 from app.repositories import document_repository as doc_repo
 from app.services.document_service import DocumentService, sha256_of_file
 
@@ -58,7 +59,8 @@ def app_id(db: Session) -> Iterator[str]:
 @pytest.fixture
 def service(db: Session, tmp_path: Path) -> DocumentService:
     settings = Settings(chunk_size=60, chunk_overlap=10)
-    return DocumentService(db, settings=settings, storage_dir=tmp_path / "storage")
+    return DocumentService(db, settings=settings, storage_dir=tmp_path / "storage",
+                           embedder=FakeEmbeddingProvider(EMBEDDING_DIM))
 
 def _write(tmp_path: Path, name: str, content: str) -> Path:
     f = tmp_path / name
@@ -79,7 +81,8 @@ def test_ingest_txt_creates_ready_document_with_chunks(
     first = chunks[0]
     assert first.application_id == app_id
     assert 0 < first.metadata_["token_count"] <= 60
-    assert first.embedding is None              # Phase 3 mới có embedding
+    assert first.embedding is not None                  # Phase 3: chunk đã có vector
+    assert len(first.embedding) == EMBEDDING_DIM
     assert first.metadata_["source"] == "cv.txt"
     assert first.metadata_["document_id"] == str(doc.id)
     assert first.metadata_["application_id"] == app_id

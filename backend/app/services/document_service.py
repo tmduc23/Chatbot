@@ -10,7 +10,8 @@ Nếu bất kỳ bước xử lý nào lỗi: document chuyển sang FAILED kèm
 để người dùng biết file nào hỏng và vì sao
 
 Phase 2 chạy đồng bộ 
-Phase 3 thêm embedding vào đây
+Phase 3 thêm bước embedding (qua EmbeddingProvider - không phụ thuộc Gemni trực tiếp)
+và hàm embedding_missing_chunk() để embed bổ sung các chunk nạp từ Phase 2
 Phase 12 chuyển phần xử lý sang background job (lúc đó mới dùng PENDING)
 """
 
@@ -18,6 +19,7 @@ import hashlib
 import logging
 import shutil
 from pathlib import Path
+import time
 
 from sqlalchemy.orm import Session
 
@@ -33,6 +35,9 @@ from app.ingestion.tokenizer import TokenCounter, get_token_counter
 from app.models import Chunk, Document, DocumentStatus
 from app.repositories import application_repository as app_repo
 from app.repositories import document_repository as doc_repo
+from app.rag.embeddings import EmbeddingProvider, get_embedding_provider
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,14 +53,34 @@ def sha256_of_file(path: Path) -> str:
     return h.hexdigest()
 
 class DocumentService:
-    def __init__(self, db: Session, settings: Settings | None = None, storage_dir: Path | None = None):
+    def __init__(
+            self, 
+            db: Session, 
+            settings: Settings | None = None, 
+            storage_dir: Path | None = None,
+            embedder: EmbeddingProvider | None = None):
         self.db = db
         self.settings = settings or get_settings()
         self.storage_dir = storage_dir or Path(self.settings.storage_dir)
+        self._embedder = embedder
 
     @property
     def token_counter(self) -> TokenCounter:
         return get_token_counter(self.settings.tokenizer_encoding)
+
+    @property
+    def embedder(self) -> EmbeddingProvider:
+        # Tạo muộn: các lỗi validate (file trùng, sai định dạng) không cần API key
+        if self._embedder is None:
+            self._embedder = get_embedding_provider(self.settings)
+        return self._embedder
+
+    def _embed(self, texts: list[str]) -> list[list[float]]:
+        t0 = time.perf_counter()
+        vectors = self.embedder.embed_documents(texts)
+        logger.info("Embedded %d chunks in %.0f ms", len(texts), (time.perf_counter() - t0) * 1000)
+        return vectors
+
 
     def ingest_file(self, application_id: str, source_path: Path, filename: str | None = None) -> Document:
         filename = filename or source_path.name
@@ -105,7 +130,10 @@ class DocumentService:
             if not pieces:
                 raise EmptyDocumentError(f"No text extracted from '{filename}' (scanned/image-only file?)")
 
-            # 7. Metadata enrichment + lưu chunks (embedding = None, Phase 3 mới xử lý)
+            # 7 . Embedding (Phase 3)
+            vectors = self._embed([p.text for p in pieces])
+            
+            # 8. Metadata enrichment + lưu chunks 
             chunks = [
                 Chunk(
                     document_id = doc.id,
@@ -113,22 +141,24 @@ class DocumentService:
                     chunk_index = p.chunk_index,
                     text = p.text,
                     page = p.page,
+                    embedding = vector,
                     metadata_ = {
                         "document_id": str(doc.id),
                         "application_id": application_id,
                         "source": filename,
                         "file_type": file_type,
                         "page": p.page,
+                        
                         "chunk_index": p.chunk_index,
                         "char_count": len(p.text),
                         "token_count": p.token_count,
                     }
                 )
-                for p in pieces
+                for p, vector in zip(pieces, vectors, strict=True)      # strict = True, đảm bảo số vector đúng bằng số chunk. Lệch báo lỗi 
             ]
             doc_repo.add_chunks(self.db, chunks)
 
-            # 8. Hoàn tất
+            # 9. Hoàn tất
             doc.status = DocumentStatus.READY
             self.db.commit()
             logger.info("Document %s READY with %d chunks", doc.id, len(chunks))
@@ -143,3 +173,15 @@ class DocumentService:
                 self.db.commit()
             logger.exception("Document %s FAILED", doc.id)      # logger.exception cho biết xem lỗi ở đâu 
             raise
+
+
+    def embed_missing_chunks(self, application_id: str) -> int:
+        """Embed các chunk còn thiếu vector. Trả về số chunk đã embed"""
+        chunks = doc_repo.list_chunks_without_embedding(self.db, application_id)
+        if not chunks: 
+            return 0
+        vectors = self._embed([c.text for c in chunks])
+        for chunk, vector in zip(chunks, vectors, strict=True):
+            chunk.embedding = vector
+        self.db.commit()
+        return len(chunks)

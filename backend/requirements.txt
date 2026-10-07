@@ -11,3 +11,4 @@ pgvector>=0.3
 pypdf>=4.0
 python-docx>=1.1
 tiktoken>=0.7
+google-genai>=1.0

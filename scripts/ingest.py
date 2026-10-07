@@ -13,11 +13,11 @@ import argparse
 import logging
 from pathlib import Path
 
-from backend.app.core.exceptions import ApplicationNotFoundError, DuplicateDocumentError, IngestionError
-from backend.app.db.session import SessionLocal
-from backend.app.repositories import application_repository as app_repo
-from backend.app.repositories import document_repository as doc_repo
-from backend.app.services.document_service import DocumentService
+from app.core.exceptions import ApplicationNotFoundError, DuplicateDocumentError, IngestionError
+from app.db.session import SessionLocal
+from app.repositories import application_repository as app_repo
+from app.repositories import document_repository as doc_repo
+from app.services.document_service import DocumentService
 
 
 
@@ -38,7 +38,7 @@ def main() -> None:
             print(f"Created application '{args.app}")
 
         service = DocumentService(db)
-        for path in args.files():
+        for path in args.files:
             print(f"\n=== {path} ===")
             try: 
                 doc = service.ingest_file(args.app, path)

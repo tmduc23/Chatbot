@@ -7,19 +7,20 @@ vào mệnh đề WHERE -> không bao giờ độc nhầm dữ liệu của appl
 
                  Document Repository
                          │
-             ┌───────────┴───────────┐
-             │                       │
-        documents                 chunks
-             │                       │
-     ┌───────┴───────┐       ┌───────┴────────┐
-     │               │       │                │
-   get_by_hash()   create()  add_chunks()   list_chunks()
+             ┌───────────┴────────────────────┐
+             │                                │
+        documents                           chunks
+             │                                │
+     ┌───────┴───────┐                ┌───────┴────────┐──────────────────────┐
+     │               │                │                │                      │
+   get_by_hash()   create()        add_chunks()   list_chunks()         list_chunks_without_embedding
 
 Repository có nhiệm vụ:
     Tìm document đã tồn tại
     Tạo document mới
     Thêm các chunk vào database
     Lấy các chunk của một document
+    List các chunk chưa có embedding
 """
 
 import uuid
@@ -63,4 +64,12 @@ def list_chunks(db: Session, application_id: str, document_id: uuid.UUID) -> lis
         select(Chunk)
         .where(Chunk.application_id == application_id, Chunk.document_id == document_id)
         .order_by(Chunk.chunk_index)
+    ))
+
+# Các chunk chưa có embedding - dùng embed để bổ sung
+
+def list_chunks_without_embedding(db: Session, application_id: str) -> list[Chunk]:
+    return list(db.scalars(
+        select(Chunk)
+        .where(Chunk.application_id == application_id, Chunk.embedding.is_(None))
     ))
