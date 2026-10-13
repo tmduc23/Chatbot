@@ -2,6 +2,8 @@
 
 Revision ID: 0001
 Revises:
+
+op: công cụ thực hiện thao tác migration
 """
 from collections.abc import Sequence
 import sqlalchemy as sa

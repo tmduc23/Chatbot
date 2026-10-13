@@ -2,6 +2,8 @@
 MỤC ĐÍCH: Nghiệp vụ "nạp một tài liệu vào knowledge base" (document ingestion)
 Đây là nơi điều phối toàn mộ ở mục 6 của spec:
 
+# Điều phối toàn bộ luồng
+
     Validate file -> SHA-256 -> Check duplicate -> Lưu file gốc
     -> Trích text + Chunk (pipeline) -> Gắn metadata -> Lưu chunks -> READY
 
@@ -64,6 +66,8 @@ class DocumentService:
         self.storage_dir = storage_dir or Path(self.settings.storage_dir)
         self._embedder = embedder
 
+    # @property: cho phép gọi một method như là thuộc tính
+    # tức dùng obj.name thay vì obj.name()
     @property
     def token_counter(self) -> TokenCounter:
         return get_token_counter(self.settings.tokenizer_encoding)

@@ -1,0 +1,10 @@
+[
+  {"query": "Mức lương mong muốn của bạn ấy là bao nhiêu?"},
+  {"query": "Bạn ấy đã lập gia đình chưa?"},
+  {"query": "Bạn ấy có bằng lái xe ô tô không?"},
+  {"query": "Bạn ấy có thể bắt đầu đi làm từ ngày nào?"},
+  {"query": "What is the candidate's favorite food?"},
+  {"query": "Does the candidate have experience building games with Unity?"},
+  {"query": "Bạn ấy có dùng pgvector không?"},
+  {"query": "Has he built web APIs with FastAPI?"}
+]

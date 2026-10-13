@@ -35,6 +35,7 @@ class VectorRetriever(Retriever):
         if not query.strip():
             return []
 
+        # Đo thời gian embedding
         t0 = time.perf_counter()
         query_vector = self.embedder.embed_query(query)
         t1 = time.perf_counter()

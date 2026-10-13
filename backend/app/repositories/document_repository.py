@@ -30,7 +30,7 @@ from sqlalchemy.orm import Session
 from app.models import Chunk, Document, DocumentStatus
 
 
-# Tìm document đã tồn tại
+# Tìm document cùng hash để chống trùng 
 def get_by_hash(db: Session, application_id: str, file_hash: str) -> Document | None:
     return db.scalars(
         select(Document).where(
@@ -39,7 +39,7 @@ def get_by_hash(db: Session, application_id: str, file_hash: str) -> Document | 
         )
     ).first()
 
-# Tạo document
+# Tạo document rồi flush để có doc.id, chưa commit
 def create(
         db: Session, *, application_id: str, filename:str, file_type: str,
         storage_path: str, file_hash: str, status: DocumentStatus
@@ -58,7 +58,7 @@ def add_chunks(db: Session, chunks: list[Chunk]) -> None:
     db.flush()
 
 
-# Lấy các chunk của một document trong một application cụ thể, db.scalars lấy trực tiếp Document
+# Lấy các chunk của một document trong một application cụ thể, sắp xếp theo chunk_index, db.scalars lấy trực tiếp Document
 def list_chunks(db: Session, application_id: str, document_id: uuid.UUID) -> list[Chunk]:
     return list(db.scalars(
         select(Chunk)

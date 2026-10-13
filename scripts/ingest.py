@@ -1,5 +1,5 @@
 """
-MỤC ĐÍCH: Công cụ dòng lệnh để nạp tài liệu vào hệ thống khi chuuaw có API (Phase 9)
+MỤC ĐÍCH: Công cụ dòng lệnh để nạp tài liệu vào hệ thống khi chưa có API (Phase 9)
 
 Ví dụ (chạy trong container backend):
     python scripts/ingest.py --app cv --app-name "My CV" data/samples/cv.pdf

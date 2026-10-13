@@ -12,7 +12,7 @@ mà quên lọc theo application
 
 import uuid
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 # frozen : read-only
 @dataclass(frozen=True)
@@ -23,7 +23,14 @@ class RetrievedChunk:
     page: int | None
     chunk_index: int
     text: str
+    # càng cao càng liên quan. Ý nghĩa tùy retriever:
+    # vector -> cosine similarity [-1, 1]
+    # keyword -> ts_rank_cd (>=0, không có trần)
+    # hybrid -> điểm RRF (vd. 0.016 -0.033)
+    # không so sánh điểm giữa các retriever khác nhau
     score: float    # càng cao càng liên quan
+    # Hybrid: thứ hạng của chunk trong từng nhánh, vd. {"vector": 1, "keyword": 4} — để debug
+    ranks: dict[str, int] = field(default_factory=dict, compare=False)
 
 
 class Retriever(ABC):

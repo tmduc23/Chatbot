@@ -21,7 +21,7 @@ _MANY_NEWLINES = re.compile(r"\n{3,}")
 
 def clean_text(text: str) -> str:
     text = unicodedata.normalize("NFC", text)       # Chuẩn hóa Unicode
-    text = text.replace("\x00", "")                 # Xóa ký tự NUL
+    text = text.replace("\x00", "")                 # Xóa ký tự NULL
     text = text.replace("\r\n", "\n").replace("\r", "\n")  # Chuẩn hóa newline
     text = _SPACES.sub(" ", text)                   # Gom khoảng trắng liên tiếp
     text = _SPACES_AROUND_NEWLINE.sub("\n", text)  # Xóa space quanh newline

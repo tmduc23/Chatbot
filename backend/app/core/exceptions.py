@@ -30,3 +30,9 @@ class EmptyDocumentError(IngestionError):
 
 class EmbeddingError(AppError):
     """Gọi embedding provider thất bại (sai API key, hết quota, mạng...). -> HTTP 429/502/503"""
+
+class RerankError(AppError):
+    """Reranker thất bại (API lỗi, trả về sai định dạng ...)"""
+
+class LLMError(AppError):
+    """Gọi LLM thất bại (sai key, hết quota, bị chặn, trả về rỗng ...) -> HTTP 503 ở Phase 9"""

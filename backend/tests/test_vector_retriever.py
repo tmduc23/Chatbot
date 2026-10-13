@@ -3,7 +3,7 @@ MỤC ĐÍCH: Integration test cho vector search với databse thật + FakeEmbe
 
 # Kiểm tra 4 điều:
     1. Chunk liên quan nhất đứng đầu
-    2. Kết quảu sắp xếp điểm giảm dần và tôn trọng top_k
+    2. Kết quả sắp xếp điểm giảm dần và tôn trọng top_k
     3. Cách ly: không bao giờ trả về chunk của application khác,
         kể cả khi chunk đó khớp với câu hỏi hơn
     4. Câu hỏi rỗng -> không trả gì
@@ -61,25 +61,27 @@ def apps(db: Session, tmp_path: Path) -> Iterator[tuple[str, str]]:
     db.execute(delete(Application).where(Application.id.in_([app_a, app_b])))
     db.commit()
 
-
+# relevant -> chunk first
 def test_most_relevant_chunk_ranks_first(db: Session, apps: tuple[str, str]) -> None:
     app_a, _ = apps
     results = VectorRetriever(db, EMBEDDER).retrieve("Docker Compose deployments", app_a, top_k=3)
     assert results[0].filename == "docker.txt"
 
+# Đúng top_k kêt quả và score giảm dần
 def test_scores_sorted_and_top_k_respected(db: Session, apps: tuple[str, str]) -> None:
     app_a, _ = apps
     results = VectorRetriever(db, EMBEDDER).retrieve("Python FastAPI", app_a, top_k=2)
     assert len(results) == 2
     assert results[0].score >= results[1].score
 
-
+# Không trả chunk của application khác
 def test_never_returns_other_application(db: Session, apps: tuple[str, str]) -> None:
     app_a, _ = apps
     # docker_b.txt (app B) khớp câu hỏi này còn tốt hơn docker.txt — nhưng không được xuất hiện
     results = VectorRetriever(db, EMBEDDER).retrieve("Docker Compose deployments", app_a, top_k=10)
     assert {r.filename for r in results} == set(DOCS_A)
 
+# query có khoảng trắng trả danh sách rỗng
 def test_empty_query_returns_nothing(db: Session, apps: tuple[str, str]) -> None:
     app_a, _ = apps
     assert VectorRetriever(db, EMBEDDER).retrieve("   ", app_a, top_k=5) == []

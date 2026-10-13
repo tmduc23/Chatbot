@@ -50,7 +50,7 @@ def test_vector_search_is_filtered_by_application(db: Session) -> None:
     results = db.scalars(
         select(Chunk)
         .where(Chunk.application_id == "t_cv")             # filter NGAY trong SQL
-        .order_by(Chunk.embedding.cosine_distance(_one_hot(1)))
+        .order_by(Chunk.embedding.cosine_distance(_one_hot(1)))         # cosine_distance cung cấp bởi pg_vector
         .limit(5)
     ).all()
 

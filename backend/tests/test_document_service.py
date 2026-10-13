@@ -62,8 +62,9 @@ def service(db: Session, tmp_path: Path) -> DocumentService:
     return DocumentService(db, settings=settings, storage_dir=tmp_path / "storage",
                            embedder=FakeEmbeddingProvider(EMBEDDING_DIM))
 
+# ghi file text để nạp
 def _write(tmp_path: Path, name: str, content: str) -> Path:
-    f = tmp_path / name
+    f = tmp_path / name         # ghép đường dẫn
     f.write_text(content, encoding="utf-8")
     return f
 

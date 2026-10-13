@@ -12,7 +12,7 @@ config.set_main_option("sqlalchemy.url", get_settings().database_url)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = Base.metadata     # danh ách  bảng của mọi model
 
 
 def run_migrations_offline() -> None:
@@ -37,7 +37,6 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
 
-# ↓↓↓ PHẢI sát lề trái, nằm NGOÀI các hàm ở trên
 if context.is_offline_mode():
     run_migrations_offline()
 else:

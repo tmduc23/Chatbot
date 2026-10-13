@@ -29,7 +29,7 @@ RETRYABLE_STATUS = {429, 500, 503}
 
 class GeminiEmbeddingProvider(EmbeddingProvider):
     BATCH_SIZE = 100
-    MAX_RETRIES = 5
+    MAX_RETRIES = 6
 
     def __init__(self, api_key: str, model: str, dimension: int, client: Any | None = None):
         if client is None:

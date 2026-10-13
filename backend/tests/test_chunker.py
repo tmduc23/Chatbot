@@ -11,6 +11,7 @@ from app.ingestion.chunker import chunk_pages, split_text
 from app.ingestion.loaders import PageText
 from app.ingestion.tokenizer import TiktokenCounter, WhitespaceTokenCounter
 
+# Bộ đếm 1 từ bằng 1 token
 WS = WhitespaceTokenCounter()
 # 40 câu, mỗi câu đúng 7 từ = 7 token (theo WhitespaceTokenCounter)
 LONG_TEXT = " ".join(f"Sentence number {i} talks about RAG systems." for i in range(40))
@@ -33,6 +34,7 @@ def test_chunks_respect_token_limit() -> None:
     assert len(chunks) > 1
     assert all(WS.count(c) <= 30 for c in chunks)
 
+# Mọi từ của text gốc đều có trong các chunk
 def test_no_word_is_lost() -> None:
     chunks = split_text(LONG_TEXT, chunk_size=30, chunk_overlap=8, counter=WS)
     joined = " ".join(chunks)
@@ -43,16 +45,18 @@ def test_cuts_at_sentence_boundaries() -> None:
     chunks = split_text(LONG_TEXT, chunk_size=30, chunk_overlap=8, counter=WS)
     assert all(c.endswith("systems.") for c in chunks)       # không chunk nào kết thúc giữa câu
 
+# Câu đầu của chunk sau nằm trong chunk trước.
 def test_consecutive_chunks_overlap_by_whole_sentence() -> None:
     chunks = split_text(LONG_TEXT, chunk_size=30, chunk_overlap=8, counter=WS)
     for prev, nxt in zip(chunks, chunks[1:]):
         first_sentence = nxt.split(". ")[0]
         assert first_sentence in prev                        # câu đầu của chunk sau = câu cuối chunk trước
-
+# chunk_overlap = 0 thì tổng token các chunk bằng text gốc.
 def test_no_overlap_when_zero() -> None:
     chunks = split_text(LONG_TEXT, chunk_size=30, chunk_overlap=0, counter=WS)
     assert sum(WS.count(c) for c in chunks) == WS.count(LONG_TEXT)   # tổng token không bị lặp
 
+# Unit là cả đoạn văn vẫn lấy được câu cuối làm overlap.
 def test_overlap_takes_last_sentence_inside_paragraph() -> None:
     # Đoạn 1 (9 từ) vừa chunk_size nên là 1 unit nguyên khối;
     # overlap vẫn lấy được CÂU CUỐI của đoạn (3 từ <= 4), không cắt nửa câu.
@@ -62,18 +66,20 @@ def test_overlap_takes_last_sentence_inside_paragraph() -> None:
     assert len(chunks) == 2
     assert chunks[1].startswith("Third point here.")
 
-
+# Câu cuối dài hơn chunk_overlap thì không overlap thay vì cắt câu.
 def test_no_overlap_rather_than_cutting_a_sentence() -> None:
     # Câu cuối của chunk 1 dài 6 từ > chunk_overlap 4 -> không overlap, chứ không cắt nửa câu
     text = "one two three four five six.\n\n" + " ".join(["word"] * 8)
     chunks = split_text(text, chunk_size=10, chunk_overlap=4, counter=WS)
     assert chunks == ["one two three four five six.", " ".join(["word"] * 8)]
 
+# Hai đoạn 20 từ thành đúng 2 chunk theo ranh giới đoạn.
 def test_prefers_paragraph_boundary() -> None:
     text = " ".join(["alpha"] * 20) + "\n\n" + " ".join(["beta"] * 20)
     chunks = split_text(text, chunk_size=30, chunk_overlap=0, counter=WS)
     assert chunks == [" ".join(["alpha"] * 20), " ".join(["beta"] * 20)]
 
+# Chuỗi 250 ký tự với CharCounter cắt thành 100, 100, 50.
 def test_hard_split_very_long_word() -> None:
     chunks = split_text("x" * 250, chunk_size=100, chunk_overlap=0, counter=CharCounter())
     assert [len(c) for c in chunks] == [100, 100, 50]
@@ -84,6 +90,7 @@ def test_invalid_config_raises(size: int, overlap: int) -> None:
     with pytest.raises(ValueError):
         split_text("abc", chunk_size=size, chunk_overlap=overlap, counter=WS)
 
+# giữ token index glloball
 def test_chunk_pages_keeps_page_index_and_token_count() -> None:
     pages = [PageText("Page one text.", 1), PageText("Page two has more text.", 2)]
     chunks = chunk_pages(pages, chunk_size=50, chunk_overlap=10, counter=WS)
@@ -98,5 +105,5 @@ def test_real_tokenizer_vietnamese_no_broken_characters() -> None:
     chunks = chunk_pages([PageText(text, 1)], chunk_size=64, chunk_overlap=16, counter=counter)
     assert len(chunks) > 1
     assert all(c.token_count <= 64 for c in chunks)
-    assert all(c.token_count == counter.count(c.text) for c in chunks)
+    assert all(c.token_count == counter.count(c.text) for c in chunks)      # Số token ghi nhận khớp với tokenizer thật
     assert not any("\ufffd" in c.text for c in chunks)        # không có ký tự hỏng "�"

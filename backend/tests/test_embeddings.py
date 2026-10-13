@@ -37,13 +37,14 @@ def test_l2_normalize_zero_vector_is_unchanged() -> None:
     assert l2_normalize([0.0, 0.0]) == [0.0, 0.0]
 
 
-# Fake provider
+# Fake provider, cùng text cho cùng vector
 def test_fake_provider_is_deterministic_and_sized() -> None:
     p = FakeEmbeddingProvider(EMBEDDING_DIM)
     a, b = p.embed_query("Docker and Kubernetes"), p.embed_query("Docker and Kubernetes")
     assert a == b
     assert len(a) == EMBEDDING_DIM
 
+# text liên quan có cosine cao hơn 
 def test_fake_provider_similar_text_scores_higher() -> None:
     p = FakeEmbeddingProvider(EMBEDDING_DIM)
     q = p.embed_query("Docker Compose deployment")
@@ -74,6 +75,7 @@ def _gemini(stub_models: _StubModels) -> GeminiEmbeddingProvider:
                                    dimension=EMBEDDING_DIM, client=SimpleNamespace(models=stub_models))
 
 
+# chia text thành các batch
 def test_gemini_batches_and_normalize() -> None:
     stub = _StubModels()
     vectors = _gemini(stub).embed_documents([f"chunk {i}" for i in range(250)])
@@ -91,20 +93,21 @@ def test_gemini_query_uses_query_task_type() -> None:
     _gemini(stub).embed_query("Duc biết Docker không?")
     assert stub.calls[-1][2].task_type == "RETRIEVAL_QUERY"
 
-# Kiểm tra retry
+# Kiểm tra retry, 429 thì thử lại
 def test_gemini_retries_on_rate_limit(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("app.rag.embeddings.gemini.time.sleep", lambda s: None)  # không chờ thật
     stub = _StubModels(fail_first_width=429)
     assert len(_gemini(stub).embed_query("hello")) == EMBEDDING_DIM
     assert len(stub.calls) == 1
 
-# Kiểm tra báo 400 thì có retry không
+# Kiểm tra báo 400 thì có retry không, 400 thì raise luôn
 def test_gemini_non_retryable_error_raises_embedding_error() -> None:
     stub = _StubModels(fail_first_width=400)
     with pytest.raises(EmbeddingError):
         _gemini(stub).embed_query("hello")
 
 # ---------- Factory ----------
+# chọn gemini mà key rỗng thì raise EmbeddingError
 def test_factory_requires_api_key_for_gemini() -> None:
     with pytest.raises(EmbeddingError):
         get_embedding_provider(Settings(embedding_provider="gemini", gemini_api_key=""))

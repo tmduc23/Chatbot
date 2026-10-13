@@ -1,0 +1,16 @@
+[
+  {"query": "Bạn ấy học trường đại học nào?", "expected_text": "Bách khoa Hà Nội (HUST)"},
+  {"query": "Which university did he study at?", "expected_text": "Bách khoa Hà Nội (HUST)"},
+  {"query": "GPA đại học của bạn ấy là bao nhiêu?", "expected_text": "GPA: 3.35/4.0"},
+  {"query": "What programming languages does he know?", "expected_text": "Python (PyTorch, NumPy"},
+  {"query": "Bạn ấy có kinh nghiệm dùng Docker không?", "expected_text": "Git, Docker, Google Colab"},
+  {"query": "containerization and deployment tools", "expected_text": "Git, Docker, Google Colab"},
+  {"query": "What is his English level?", "expected_text": "TOEIC 875"},
+  {"query": "Bạn ấy đạt những giải thưởng gì?", "expected_text": "Giải Nhì, Bảo vệ đồ án tốt nghiệp"},
+  {"query": "Bạn ấy nghiên cứu ở lab nào?", "expected_text": "Phân tích tín hiệu (IPSAL)"},
+  {"query": "What model did he propose for breast ultrasound segmentation?", "expected_text": "Đề xuất MFBF-Net"},
+  {"query": "Mô hình MFBF-Net đạt kết quả bao nhiêu trên tập BUSI?", "expected_text": "82.62%DSC"},
+  {"query": "How many parameters does his model have?", "expected_text": "1.87 triệu tham số"},
+  {"query": "Bạn ấy có công bố khoa học nào không?", "expected_text": "GTSD 2026"},
+  {"query": "How can I contact him?", "expected_text": "tranminhduc230204@gmail.com"}
+]

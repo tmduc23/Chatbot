@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"     # frontend url, có được gọi backend không
 
     # Ingestion (Phase 2)
-    storage_dir: str = "storage"   # nơi lưu file gốc, tương đối với /app trong container
+    storage_dir: str = "storage"             # nơi lưu file gốc, tương đối với /app trong container
     max_upload_mb: int = 10
     chunk_size: int = 256                    # số TOKEN tối đa mỗi chunk
     chunk_overlap: int = 40                  # số token TỐI ĐA lặp lại giữa 2 chunk liền nhau
@@ -30,10 +30,29 @@ class Settings(BaseSettings):
     embedding_provider: str = "gemini"      # embedding provider, có thể là "gemini" hoặc "openai"
     embedding_model: str = "gemini-embedding-001"
     gemini_api_key: SecretStr | None = None         # SecretStr là kiểu dữ liệu bảo mật, khi in ra sẽ không hiển thị giá trị thực
-    
-    retriever_top_k: int = 20
-    reranker_top_k: int = 5
 
+    # Retrieval
+    retrieval_mode: str = "hybrid"            # vector | keyword | hybrid
+    retrieval_candidate_k: int = 30           # số kết quả mỗi nhánh (vector, keyword) lấy ra trước
+    rrf_k: int = 60                           # hằng số k trong công thức RRF
+    retrieval_top_k: int = 20
+    reranker_provider: str = "gemini"
+    reranker_model: str = "gemini-3.5-flash-lite"
+    reranker_top_k: int = 5
+    reranker_max_chars: int = 1000             # cắt bớt mỗi chunk trước khi gửi cho reranker
+
+    # Cohere reranker — dùng khi reranker_provider = "cohere" 
+    cohere_api_key: SecretStr | None = None 
+    cohere_rerank_model: str = "rerank-multilingual-v3.0"
+
+    # Ngưỡng lọc chunk sau rerank (Phase 6). None = dùng mặc định theo RERANKER_PROVIDER 
+    reranker_min_score: float | None = None 
+    # Generation (Phase 6) 
+    llm_provider: str = "gemini"               # gemini | fake 
+    llm_model: str = "gemini-3.5-flash" 
+    llm_temperature: float = 0.2 
+    llm_max_output_tokens: int = 2048 
+    context_max_chars: int = 6000              # tổng độ dài context đưa vào LLM
 
 
 @lru_cache      # dùng lại config khi gọi nhiều lần, tránh tạo nhiều instance

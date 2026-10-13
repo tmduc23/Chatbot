@@ -171,7 +171,7 @@ def _merge_units(units: list[str], chunk_size: int, chunk_overlap: int, counter:
             #     - <= chunk_overlap          -> overlap không quá lớn
             #     - <= chunk_size - n         -> overlap + unit mới vẫn vừa 1 chunk
             budget = min(chunk_overlap, chunk_size - n)
-            tail = _overlap_tail(chunk_text, budget, counter)       # xét ngược chunktext, lấy tail mơi 
+            tail = _overlap_tail(chunk_text, budget, counter)       # xét ngược chunktext, lấy tail mới 
             window = [(tail, counter.count(tail))] if tail else []  # window mới gồm thành phần overlap
             total = window[0][1] if window else 0                   # tổng số token trong window mới, số token overlap
 

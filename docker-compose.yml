@@ -27,6 +27,7 @@ services:
       - ./scripts:/app/scripts
       - ./data:/app/data
       - ./storage:/app/storage
+      - ./eval:/app/eval
     depends_on:
       postgres:
         condition: service_healthy

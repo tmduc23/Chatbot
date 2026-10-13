@@ -1,0 +1,44 @@
+===== cv.pdf #0 (page 1) =====
+Trần Minh Đức
+✉tranminhduc230204@gmail.com•♂phone+84 944 985 501•/githubgithub.com/tmduc23
+HỌC VẤN
+Đại học Bách khoa Hà Nội (HUST)Hà Nội, Việt Nam
+Cử nhân ngành Kỹ thuật Điều khiển và Tự động hóa Dự kiến tốt nghiệp 07/2026
+Xếp loại tốt nghiệp: Giỏi (GPA: 3.35/4.0)
+Trường THPT Giao ThủyNinh Bình, Việt Nam
+Á khoa, Khối Toán–Vật lý–Tiếng Anh (A1)·GPA: 9.0/10 Tốt nghiệp 07/2022
+KỸ NĂNG
+Ngôn ngữ lập trình:Python (PyTorch, NumPy, OpenCV, scikit-learn), MATLAB, LATEX
+Học sâu:Phân đoạn ảnh y tế với các biến thể U-Net; kiến trúc kết hợp CNN–Transformer–Mamba
+Công cụ và nền tảng:Git, Docker, Google Colab, Kaggle (tính toán GPU), Linux
+
+===== cv.pdf #1 (page 1) =====
+Công cụ và nền tảng:Git, Docker, Google Colab, Kaggle (tính toán GPU), Linux
+Ngoại ngữ:Tiếng Anh, TOEIC 875 (Nghe: 450, Đọc: 425)
+DANH HIỆU VÀ GIẢI THƯỞNG
+•Giải Nhì, Bảo vệ đồ án tốt nghiệpĐại học Bách khoa Hà Nội, 2026
+•Á khoa, Khối Toán–Vật lý–Tiếng AnhTrường THPT Giao Thủy, 2022
+•Giải Ba, Kỳ thi học sinh giỏi Hóa học cấp tỉnhTrường THPT Giao Thủy, 2021
+KINH NGHIỆM NGHIÊN CỨU
+Lab nghiên cứu Xử lý ảnh và Phân tích tín hiệu (IPSAL), HUSTHà Nội, Việt Nam
+Sinh viên nghiên cứu05/2025–Hiện tại
+Phân đoạn ảnh y tế có giám sát
+•Đề xuất MFBF-Net, một mô hình CNN–Mamba–Transformer nhẹ dành cho bài toán phân đoạn tổn thương
+trên ảnh siêu âm vú.
+
+===== cv.pdf #2 (page 1) =====
+•Đề xuất MFBF-Net, một mô hình CNN–Mamba–Transformer nhẹ dành cho bài toán phân đoạn tổn thương
+trên ảnh siêu âm vú.
+•Thiết kế các mô-đun FMPA, DMBF và PMAA mới nhằm hợp nhất hiệu quả đặc trưng đa tỷ lệ và mô hình
+hóa các mối phụ thuộc dài hạn.
+•Tối ưu độ phức tạp của mô hình xuống còn 1.87 triệu tham số và 2.71 GFLOPs, đồng thời đạt hiệu suất
+phân đoạn tiên tiến.
+•Đạt82.62%DSC và74.23%IoU trên tập dữ liệu BUSI; đạt86.91%DSC và78.45%IoU trên tập dữ liệu
+UDIAT, vượt trội so với các phương pháp gần đây dựa trên CNN, Transformer và Mamba.
+CÔNG BỐ KHOA HỌC
+Trần Minh Đức, Nguyễn Quang Huy, Trần Thị Thảo, Phạm Văn Trường. "Efficient Multi-Scale Feature Fusion
+
+===== cv.pdf #3 (page 1) =====
+Trần Minh Đức, Nguyễn Quang Huy, Trần Thị Thảo, Phạm Văn Trường. "Efficient Multi-Scale Feature Fusion
+via Mamba-Based Attention for Breast Ultrasound Lesion Segmentation."Đã được chấp nhận công bố tại Hội
+nghị quốc tế GTSD 2026.

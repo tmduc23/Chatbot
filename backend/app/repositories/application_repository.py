@@ -39,6 +39,8 @@ from app.models import Application
         - Tìm thấy  → trả về object Application
         - Không tìm thấy → trả về None
 """
+
+# Lấy application theo khóa chính bằng db.get
 def get(db: Session, application_id: str) -> Application | None:
     # db.get() tìm một object dựa trên Primary Key
     return db.get(Application, application_id)
@@ -63,6 +65,7 @@ def get(db: Session, application_id: str) -> Application | None:
         )
 """
 
+# Thêm application rồi flush, không commit
 def create(db: Session, application_id: str, name: str, description: str | None = None) -> Application:
     app = Application(id=application_id, name=name, description=description)
     db.add(app)
