@@ -43,16 +43,31 @@ class Settings(BaseSettings):
 
     # Cohere reranker — dùng khi reranker_provider = "cohere" 
     cohere_api_key: SecretStr | None = None 
-    cohere_rerank_model: str = "rerank-multilingual-v3.0"
+    cohere_rerank_model: str = "rerank-v4.0-pro"
 
     # Ngưỡng lọc chunk sau rerank (Phase 6). None = dùng mặc định theo RERANKER_PROVIDER 
     reranker_min_score: float | None = None 
     # Generation (Phase 6) 
-    llm_provider: str = "gemini"               # gemini | fake 
-    llm_model: str = "gemini-3.5-flash" 
+    llm_provider: str = "open router"               # gemini | fake | open router
+    llm_model: str = "nvidia/nemotron-3-ultra-550b-a55b:free" 
     llm_temperature: float = 0.2 
     llm_max_output_tokens: int = 2048 
     context_max_chars: int = 6000              # tổng độ dài context đưa vào LLM
+
+    # OpenRouter (API chuẩn OpenAI) — dùng khi LLM_PROVIDER=openrouter
+    openrouter_api_key: SecretStr | None = None
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+
+    # Citation + Grounding (Phase 7)
+    grounding_check: bool = False               # True = thêm 1 lần gọi LLM mỗi câu để kiểm tra nguồn
+    grounding_model: str | None = None          # Nonen = dùng LLM_MODEL
+
+    # API + hội thoại (Phase 9)
+    admin_api_key: SecretStr | None = None      # bảo vệ API quản trị (tạo app, upload, xóa ...) qua header X-API-Key
+    chat_condense_question: bool = True         # True = viết lại câu hỏi nối tiếp thành câu độc lập (thêm 1 lần gọi LLM)
+    chat_history_turns: int = 3                 # số lượt hỏi-đáp gần nhất được đưa vào câu hỏi
+
+    
 
 
 @lru_cache      # dùng lại config khi gọi nhiều lần, tránh tạo nhiều instance

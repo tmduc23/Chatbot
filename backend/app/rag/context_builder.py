@@ -35,6 +35,15 @@ class Source:
     chunk_index: int
     score: float             # điểm reranker 
 
+    def to_dict(self) -> dict:
+            """Format trả về cho frontend (spec mục 13). UUID -> str để chuyển được sang JSON."""
+            return {
+                "number": self.number,
+                "document_id": str(self.document_id),
+                "filename": self.filename,
+                "page": self.page,
+                "chunk_id": str(self.chunk_id),
+            }
 
 @dataclass(frozen=True)
 class BuiltContext:

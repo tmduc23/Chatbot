@@ -36,3 +36,16 @@ class RerankError(AppError):
 
 class LLMError(AppError):
     """Gọi LLM thất bại (sai key, hết quota, bị chặn, trả về rỗng ...) -> HTTP 503 ở Phase 9"""
+
+class ApplicationAlreadyExistsError(AppError):
+    """Tạo application với id đã có.                     -> HTTP 409"""
+
+class DocumentNotFoundError(AppError):
+    """document_id không tồn tại TRONG application này.  -> HTTP 404"""
+
+class ChatSessionNotFoundError(AppError):
+    """session_id không tồn tại TRONG application này.   -> HTTP 404"""
+
+class InvalidQuestionError(AppError, ValueError):
+    """Câu hỏi rỗng hoặc quá dài.                         -> HTTP 422
+    Kế thừa thêm ValueError để code/test cũ (pytest.raises(ValueError)) vẫn đúng."""

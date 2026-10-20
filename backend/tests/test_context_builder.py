@@ -70,3 +70,10 @@ def test_first_chunk_is_truncated_instead_of_empty_context() -> None:
 def test_empty_input() -> None:
     ctx = build_context([])
     assert ctx.text == "" and ctx.sources == [] and ctx.dropped == 0
+
+def test_source_to_dict_has_api_fields() -> None:
+    built = build_context([_r("cv.pdf", "Docker", page=2)])
+    data = built.sources[0].to_dict()
+    assert set(data) == {"number", "document_id", "filename", "page", "chunk_id"}
+    assert data["number"] == 1 and data["page"] == 2
+    assert isinstance(data["document_id"], str) and isinstance(data["chunk_id"], str)   # UUID -> str cho JSON

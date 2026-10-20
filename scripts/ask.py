@@ -28,6 +28,7 @@ import logging
 
 from app.db.session import SessionLocal
 from app.services.rag_service import build_rag_service
+from app.core.exceptions import ApplicationNotFoundError
 
 
 def main() -> None:
@@ -40,7 +41,10 @@ def main() -> None:
 
     # mở kết nối tới đb, sau đó tự đóng
     with SessionLocal() as db:
-        result = build_rag_service(db).ask(args.question, args.app)
+        try:
+            result = build_rag_service(db).ask(args.question, args.app)
+        except ApplicationNotFoundError as exc:
+            raise SystemExit(f"Lỗi: {exc}. Xem danh sách: python scripts/list_apps")
 
     r = result.retrieval
     if args.debug:

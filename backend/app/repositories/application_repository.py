@@ -22,9 +22,11 @@ Repository KHÔNG commit - việc commit thuộc về service (người biết k
                     PostgreSQL
 """
 
+from sqlalchemy import select
 
 from sqlalchemy.orm import Session
 from app.models import Application
+from app.core.exceptions import ApplicationNotFoundError
 
 
 
@@ -71,3 +73,18 @@ def create(db: Session, application_id: str, name: str, description: str | None 
     db.add(app)
     db.flush()
     return app
+
+# require: gom việc lấy "application, không có thì báo lỗi"
+def require(db: Session, application_id: str) -> Application:
+    """
+    Như get() nhưng KHÔNG trả None: application không tồn tại -> ApplicationNotFoundError.
+    Dùng ở mọi đầu nghiệp vụ nhận application_id từ bên ngoài (câu hỏi, upload, phiên chat)
+    """
+    app = get(db, application_id)
+    if app is None:
+        raise ApplicationNotFoundError(f"Application '{application_id}' not found")
+    return app
+
+def list_all(db: Session) -> list[Application]:
+    "Danh sách application (Phase 9: GET /applications, Phsase 10: ô chọn application)"
+    return list(db.scalars(select(Application).order_by(Application.id)))

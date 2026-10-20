@@ -47,19 +47,20 @@ def apps(db: Session, tmp_path: Path) -> Iterator[tuple[str, str]]:
     app_a, app_b = f"t_a_{uuid.uuid4().hex[:6]}", f"t_b_{uuid.uuid4().hex[:6]}"
     db.add_all([Application(id=app_a, name="A"), Application(id=app_b, name="B")])
     db.commit()
-
-    service = DocumentService(db, settings=Settings(chunk_size=500, chunk_overlap=50),
-                              storage_dir=tmp_path / "storage", embedder=EMBEDDER)
-    for app_id, docs in ((app_a, DOCS_A), (app_b, DOCS_B)):
-        for name, content in docs.items():
-            f = tmp_path / f"{app_id}_{name}"
-            f.write_text(content, encoding="utf-8")
-            service.ingest_file(app_id, f, filename=name)
-
-    yield app_a, app_b
-    db.rollback()
-    db.execute(delete(Application).where(Application.id.in_([app_a, app_b])))
-    db.commit()
+    try:
+        service = DocumentService(db, settings=Settings(chunk_size=500, chunk_overlap=50),
+                                  storage_dir=tmp_path / "storage", embedder=EMBEDDER)
+        for app_id, docs in ((app_a, DOCS_A), (app_b, DOCS_B)):
+            for name, content in docs.items():
+                f = tmp_path / f"{app_id}_{name}"
+                f.write_text(content, encoding="utf-8")
+                service.ingest_file(app_id, f, filename=name)
+        yield app_a, app_b
+    finally:
+        # kể cả khi nạp lỗi giữa chừng cũng dọn sạch, không để rác trong DB
+        db.rollback()
+        db.execute(delete(Application).where(Application.id.in_([app_a, app_b])))
+        db.commit()
 
 # relevant -> chunk first
 def test_most_relevant_chunk_ranks_first(db: Session, apps: tuple[str, str]) -> None:

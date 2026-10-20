@@ -8,7 +8,7 @@ Trả về câu trả lời soạn sẵn (mặc định trích [Source 1]) và G
 from app.rag.llm.base import LLMResponse, LLMProvider
 
 class FakeLLM(LLMProvider):
-    def __init__(self, answer: str = "Fake answer bassed on the context [Source 1]."):
+    def __init__(self, answer: str = "Fake answer based on the context [Source 1]."):
         self.answer = answer
         self.calls: list[dict] = []
 

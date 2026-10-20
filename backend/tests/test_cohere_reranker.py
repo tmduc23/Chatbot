@@ -59,7 +59,7 @@ class _StubClient:
 
 def _reranker(responses: list, **kwargs) -> tuple[CohereReranker, _StubClient]:
     stub = _StubClient(responses)
-    return CohereReranker(api_key="test", model="rerank-multilingual-v3.0", client=stub, **kwargs), stub
+    return CohereReranker(api_key="test", model="rerank-v4.0-pro", client=stub, **kwargs), stub
 
 
 # Kiểm tra gửi đúng model, query, documents bị cắt, top_n = tất cả
@@ -67,7 +67,7 @@ def test_sends_model_query_and_truncated_documents() -> None:
     reranker, stub = _reranker([_response([(0, 0.1), (1, 0.2), (2, 0.3)])], max_chars=10)
     reranker.rerank("RAG?", CHUNKS, top_k=2)
     call = stub.calls[0]
-    assert call["model"] == "rerank-multilingual-v3.0"
+    assert call["model"] == "rerank-v4.0-pro"
     assert call["query"] == "RAG?"
     assert call["documents"] == [c.text[:10] for c in CHUNKS]
     assert call["top_n"] == 3
@@ -120,7 +120,7 @@ def test_factory_build_cohere() -> None:
     reranker = get_reranker(Settings(reranker_provider="cohere",
     cohere_api_key="test_key"))
     assert isinstance(reranker, CohereReranker)
-    assert reranker.model == "rerank-multilingual-v3.0"
+    assert reranker.model == "rerank-v4.0-pro"
 
 # Thiếu API key -> báo lỗi
 def test_factory_cohere_requires_key() -> None:

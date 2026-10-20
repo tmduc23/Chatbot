@@ -27,7 +27,8 @@ class DocumentStatus(str, enum.Enum):
 
 class Document(TimestampMixin, Base):
     __tablename__ = "documents"
-    __table_args__ = (UniqueConstraint("application_id", "file_hash", name="uq_document_file_hash"),)
+    __table_args__ = (UniqueConstraint("application_id", "file_hash", name="uq_document_file_hash"),
+                      UniqueConstraint("id", "application_id", name="uq_documents_id_app"))
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     application_id: Mapped[str] = mapped_column(ForeignKey("applications.id", ondelete="CASCADE"), index=True)

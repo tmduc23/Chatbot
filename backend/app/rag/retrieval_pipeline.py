@@ -90,9 +90,12 @@ class RetrievalPipeline:
 
     def run(self, query: str, application_id: str) -> RetrievalResult:
         t0 = time.perf_counter()
+
+        # retrive
         candidates = self.retriever.retrieve(query, application_id, self.retrieval_top_k)       # truy xuất các chunk từ hybrid
         t1 = time.perf_counter()
         domain = self.domain_resolver(application_id) if self.domain_resolver else None
+        # rerank
         reranked = self.reranker.rerank(query, candidates, self.rerank_top_k, domain=domain)    # rerank bằng LLM
         t2 = time.perf_counter()
         relevant = [r for r in reranked if self.passes(r)]

@@ -10,6 +10,6 @@ from app.db.base import Base, TimestampMixin
 class Application(TimestampMixin, Base):
     __tablename__ = "applications"
 
-    id: Mapped[str] = mapped_column(String(50), primary_key=True)   # "cv", "projects"
+    id: Mapped[str] = mapped_column(String(50), primary_key=True)   # "cv", "projects", primary_key=True: đánh dấu id là khóa chính
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(Text)

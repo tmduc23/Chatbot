@@ -15,19 +15,23 @@ Phase 2 chạy đồng bộ
 Phase 3 thêm bước embedding (qua EmbeddingProvider - không phụ thuộc Gemni trực tiếp)
 và hàm embedding_missing_chunk() để embed bổ sung các chunk nạp từ Phase 2
 Phase 12 chuyển phần xử lý sang background job (lúc đó mới dùng PENDING)
+
 """
 
 import hashlib
 import logging
 import shutil
+import tempfile
+import uuid
 from pathlib import Path
+from typing import BinaryIO         
 import time
 
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, get_settings
 from app.core.exceptions import (
-    ApplicationNotFoundError, DuplicateDocumentError, EmptyDocumentError,
+    ApplicationNotFoundError, DocumentNotFoundError ,DuplicateDocumentError, EmptyDocumentError,
     FileTooLargeError, UnsupportedFileTypeError,
 )
 
@@ -178,6 +182,62 @@ class DocumentService:
             logger.exception("Document %s FAILED", doc.id)      # logger.exception cho biết xem lỗi ở đâu 
             raise
 
+
+    def ingest_upload(self, application_id: str, fileobj: BinaryIO, filename: str) -> Document:
+        """
+        Nạp file người dùng uplo (UploadFile.file của FastAPI).
+
+        Ghi ra file tạm rồi dùng lại ingest_file() - toàn bộ kiểm tra cũ (định dạng, trùng, dung lượng)
+        giữ nguyên, Đọc từng 1MB và DỪNG khi vượt MAX_UPLOAD_MB: không để ai gửi file 5GB làm đầy ổ đĩa
+
+        "ingest_upload" không viết lại logic nạp tài liệu, nó chỉ ghi file upload ra file tạm rồi gọi "ingest_file()"
+
+        "ingest_upload: chỉ lo phần "file đến từ Internet"
+        """
+
+        app_repo.require(self.db, application_id)
+        # Chỉ lấy TÊN file: trình duyệt/kẻ xấu có thể gửi "../../etc/passwd" hoặc "C:\\x\\cv.pdf"
+        safe_name = Path(filename.replace("\\", "/")).name or "upload"
+        suffix = Path(safe_name).suffix.lower()
+
+        if suffix.lstrip(".") not in SUPPORTED_FILE_TYPES:
+            raise UnsupportedFileTypeError(f"'{safe_name}': unsupported type '{suffix or '(none)'}'")
+
+        max_bytes = self.settings.max_upload_mb * 1024 * 1024
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir) / f"upload{suffix}"
+            written = 0
+            with tmp_path.open("wb") as out:
+                for block in iter(lambda: fileobj.read(1024 * 1024), b""):
+                    written += len(block)
+                    if written > max_bytes:
+                        raise FileTooLargeError(f"'{safe_name}' is larger than {self.settings.max_upload_mb}MB")
+                    out.write(block)
+            return self.ingest_file(application_id, tmp_path, filename=safe_name)
+
+    def list_documents(self, application_id: str) -> list[Document]:
+        app_repo.require(self.db, application_id)
+        return doc_repo.list_documents(self.db, application_id)
+
+    def get_document(self, application_id: str, document_id: uuid.UUID) -> Document:
+        doc = doc_repo.get_document(self.db, application_id, document_id)
+        if doc is None: 
+            raise DocumentNotFoundError(f"Document {document_id} not found")
+        return doc
+
+
+    def count_chunks(self, application_id: str, document_id: uuid.UUID) -> int:
+        return doc_repo.count_chunks(self.db, application_id, document_id)
+
+    def delete_document(self, application_id: str, document_id: uuid.UUID) -> None:
+        doc = self.get_document(application_id, document_id)
+        storage_path = Path(doc.storage_path)
+        doc_repo.delete_document(self.db, application_id, document_id)          # chunk xóa theo CASCADE
+        self.db.commit()
+        # Xóa file gốc SAU khi commit: nếu commit lỗi thì file vẫn còn, dữ liệu không lệch.
+        # (Tên file = hash, duy nhất trong application -> không có document nào khác dùng chung file này.)
+        storage_path.unlink(missing_ok=True)
+        logger.info("Deleted document %s (app=%s)", document_id, application_id)
 
     def embed_missing_chunks(self, application_id: str) -> int:
         """Embed các chunk còn thiếu vector. Trả về số chunk đã embed"""
