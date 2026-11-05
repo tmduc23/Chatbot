@@ -109,6 +109,7 @@ Rerank latency (Cohere API): p50 0.5 s, p95 1.3–2.8 s. Retrieval without reran
 - **Reranking is the biggest win.** Per question against vector, on PeerQA rerank fixed 24 questions and broke 3 at top 5 (QASPER: 20 vs 10).
 - **Hybrid search did not help.** On both datasets hybrid ties with vector (PeerQA top 5: 12 questions gained, 10 lost). After reranking, hybrid → rerank equals vector → rerank within 1–3 questions, because inside one paper both candidate pools of 20 overlap almost completely. We keep the simpler pipeline.
 - **The configuration chosen on QASPER held up on PeerQA without changes** (hit@5 .84 on both).
+- **Section chunking was tested and not adopted.** One chunk per paragraph (merged when short, never crossing a section, with a `Title > Section` line) against fixed 256 tokens: no clear difference on QASPER (paired CIs include 0), worse on PeerQA (hit@5 .84 → .75, paired CI [−.15, −.03]), with 1.7× more chunks and 2× rerank latency. This matches the literature: fixed-size is at least as good as semantic chunking on QASPER (Qu et al., 2024), and chunking strategy explains only 0.9–2% of retrieval variance (Chauhan & Hegde, DATA 2026).
 
 ### Limitations
 
@@ -160,7 +161,7 @@ Two question types are scored separately:
 - **Trap failures track label quality.** QASPER reports 90% answerability agreement overall (Dasigi et al., 2021), but in the dev set, of the 101 multi-annotated questions with at least one "unanswerable" vote, 74% had another annotator who answered it. All 4 answered traps had a single annotator; none of the 8 traps that two annotators agreed on was answered. The split rule uses only QASPER's labels, not our outputs, and we report both rows. (n is small: a trend, not a statistical result.)
 - **Manual review of the 4 answered "traps": 3 are answered in the paper, 1 is partly wrong.** Each had a single QASPER annotator who marked it unanswerable (e.g. *"What features are used?"* in a paper titled *"…using TF-IDF Features"*). The partly wrong one quotes a real number (79% recall) from a side experiment as the method's performance. We report the raw 13/17 by the original labels.
 - **The main weakness is over-caution on list questions.** Of the 5 wrong refusals: 2 are clear LLM misses (the answer was in the top-ranked chunk, or a numbered list split across chunks); 1 needs tag names that QASPER replaced with a formula placeholder; 1 is only answerable from a table body, which QASPER's text does not include (refusing was correct for our input); 1 is a retrieval miss (the reranker pushed the correct chunk, vector rank 1, out of the top 5).
-- **PeerQA trap failures come from the input text, not from invention.** In PeerQA the text of F1000 papers includes the reviewer reports and the authors' responses, so a reviewer's question can be answered by the authors' own reply: 7 of the 11 answered traps quoted that text, and 1 more is answered in the article body. On the other 36 papers, 33 traps were refused; 2 of the 3 answered ones are stated in the camera-ready text. *(Planned: remove the peer-review section from these 4 papers and re-run; both numbers will be reported. In a real product, answering from a review that is part of the uploaded PDF is fine, as long as the answer says it comes from the review.)*
+- **PeerQA trap failures come from the input text, not from invention.** In PeerQA the text of F1000 papers includes the reviewer reports and the authors' responses, so a reviewer's question can be answered by the authors' own reply: 7 of the 11 answered traps quoted that text, and 1 more is answered in the article body. On the other 36 papers, 33 traps were refused; 2 of the 3 answered ones are stated in the camera-ready text. We tried cutting the review section with a rule-based splitter, but it cut correctly in only 2 of the 8 affected papers (the first reviewer has no header, formats differ, one paper has review text inside captions), so we kept the raw data and report the split above. *In a real product, answering from a review that is part of the uploaded PDF is fine, as long as the answer says it comes from the review; the fix there is to tag such chunks at ingest, not to hand-tune cut points.*
 - **PeerQA is harder for answerable questions** (13/32 wrongly refused). Of the 13: 6 are retrieval misses, 5 had the gold chunk in the top 5 but the LLM refused (reference answers are written freely by the paper authors, often longer than any one passage), and 2 were blocked by the threshold with the gold chunk at rank 1–2 (scores .58 and .64). Lowering the threshold to save those 2 would pass 7 more traps to the LLM across both datasets, so 0.70 was kept.
 - **Low F1 is expected on QASPER**: answers are full sentences while the references are short spans.
 
@@ -171,6 +172,7 @@ Two question types are scored separately:
 - The faithfulness judge failed on 6 of 27 answered questions (5 ran out of output tokens while reasoning, 1 connection error); faithfulness is computed on the remaining 21. Manual review of every NO verdict against the stored context: 4 of 5 "unsupported" claims were in fact stated in the context (the judge is strict on paraphrases); 1 was a real unsupported inference (qa058). Reviewed faithfulness ≈ .99.
 - Citation hit is strict: 3 answers were correct but cited a different passage that states the same fact.
 - Free-tier model: latency varies with load.
+- Rerank fails open: if the Cohere API errors (e.g. quota), the top 5 vector chunks are used and the threshold is skipped. Runs with unscored questions are discarded. In one such accidental run, prompt v5 alone still refused 11/17 QASPER traps, so the threshold is a second layer, not the only one.
 
 ## Data and licences
 
@@ -180,8 +182,10 @@ Two question types are scored separately:
 
 ## Roadmap
 
-- PeerQA re-run with the peer-review sections removed.
-- Chunking A/B: fixed 256 tokens vs paragraph/section chunks.
+- Answer generation with section chunks, on the same LLM provider as the baseline.
+- 5 vs 10 chunks passed to the LLM (targets wrong refusals on list questions).
+- Contextual chunk headers (LLM-written context per chunk, Anthropic 2024).
+- Short-answer F1, so answer F1 is comparable with published QASPER numbers.
 - Prompt v6 for list questions and partial answers (main cause of wrong refusals).
 - Full-paper-in-context baseline vs RAG.
 - Test on real PDFs (not benchmark text).
