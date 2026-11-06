@@ -109,7 +109,7 @@ Rerank latency (Cohere API): p50 0.5 s, p95 1.3–2.8 s. Retrieval without reran
 - **Reranking is the biggest win.** Per question against vector, on PeerQA rerank fixed 24 questions and broke 3 at top 5 (QASPER: 20 vs 10).
 - **Hybrid search did not help.** On both datasets hybrid ties with vector (PeerQA top 5: 12 questions gained, 10 lost). After reranking, hybrid → rerank equals vector → rerank within 1–3 questions, because inside one paper both candidate pools of 20 overlap almost completely. We keep the simpler pipeline.
 - **The configuration chosen on QASPER held up on PeerQA without changes** (hit@5 .84 on both).
-- **Section chunking was tested and not adopted.** One chunk per paragraph (merged when short, never crossing a section, with a `Title > Section` line) against fixed 256 tokens: no clear difference on QASPER (paired CIs include 0), worse on PeerQA (hit@5 .84 → .75, paired CI [−.15, −.03]), with 1.7× more chunks and 2× rerank latency. This matches the literature: fixed-size is at least as good as semantic chunking on QASPER (Qu et al., 2024), and chunking strategy explains only 0.9–2% of retrieval variance (Chauhan & Hegde, DATA 2026).
+- **Section chunking was tested and not adopted** (no clear gain on QASPER, worse on PeerQA). See [Experiment: chunking](#experiment-chunking).
 
 ### Limitations
 
@@ -174,6 +174,47 @@ Two question types are scored separately:
 - Free-tier model: latency varies with load.
 - Rerank fails open: if the Cohere API errors (e.g. quota), the top 5 vector chunks are used and the threshold is skipped. Runs with unscored questions are discarded. In one such accidental run, prompt v5 alone still refused 11/17 QASPER traps, so the threshold is a second layer, not the only one.
 
+## Experiment: chunking
+
+**Question.** Does splitting by paper structure beat fixed-size chunks?
+- **S256**: fixed 256 tokens, overlap 40. This is the baseline.
+- **SEC**: one chunk per paragraph. Short paragraphs are merged and a chunk never crosses a section. Each chunk starts with a `Title > Section` line.
+
+Both use the same papers, questions, embedding, reranker and threshold. SEC gives about 1.7× more chunks, so its rerank candidates were raised from 20 to 50 to cover roughly the whole paper.
+
+**Rule, written before running:** switch to SEC only if the paired CI on hit@1 or MRR excludes 0 and hit@5 does not drop.
+
+| | QASPER S256 | QASPER SEC | PeerQA S256 | PeerQA SEC |
+|---|---|---|---|---|
+| Chunks | 1,740 | 2,981 | 3,885 | 6,274 |
+| Retrieval hit@1 (vector → rerank) | .44 | .48 | .50 | .48 |
+| Retrieval hit@5 | .84 | .82 | **.84** | **.75** |
+| Retrieval MRR | .59 | .61 | .62 | .58 |
+| Rerank latency p95 | 2.8 s | 5.6 s | | |
+| Generation F1 / answer recall (32 answerable) | .33 / .70 | .35 / .71 | | |
+| Wrongly refused | 3/32 | 4/32 | | |
+| Citation hit | .79 | .89 | | |
+| Traps refused | 13/17 | 12/17 | | |
+
+**Paired differences (SEC − S256):**
+- QASPER hit@1: 16 questions better, 10 worse. The CI includes 0.
+- QASPER hit@5: 6 better, 9 worse. The CI includes 0.
+- QASPER F1: +.025 [−.03, +.09], 10 better, 6 worse.
+- PeerQA hit@5: −.09 [−.15, −.03], 3 better, 15 worse. This is the only clear result.
+
+**Decision.** We keep S256. SEC costs 1.7× the chunks and 2× the rerank latency, and it is clearly worse on PeerQA.
+
+**One confounder found and removed.** The first SEC generation run used a different LLM host from the S256 baseline and showed F1 +.054. When S256 was re-run on the same host, the gap halved. The same model on two hosts already differed by +.03 F1 and 5 vs 3 wrong refusals. Differences smaller than about ±.03 F1 on 32 questions are therefore within run-to-run noise.
+
+**Literature agrees.** Fixed-size chunking is at least as good as semantic chunking on QASPER (Qu et al., 2024). Chunking strategy explains only 0.9–2% of retrieval variance (Chauhan & Hegde, DATA 2026).
+
+**Not tested yet:**
+- SEC without the header line.
+- SEC with merging up to 200 tokens.
+- An equal-token comparison (SEC top 8–9 vs S256 top 5).
+
+*The trap row compares SEC on NIM with S256 on the OpenRouter host, because the S256 NIM trap re-run lost its rerank scores (API quota).*
+
 ## Data and licences
 
 - **QASPER** (Dasigi et al., NAACL 2021), CC BY 4.0. The dev subset used here can be regenerated with `scripts/import_qasper.py`.
@@ -182,7 +223,6 @@ Two question types are scored separately:
 
 ## Roadmap
 
-- Answer generation with section chunks, on the same LLM provider as the baseline.
 - 5 vs 10 chunks passed to the LLM (targets wrong refusals on list questions).
 - Contextual chunk headers (LLM-written context per chunk, Anthropic 2024).
 - Short-answer F1, so answer F1 is comparable with published QASPER numbers.
