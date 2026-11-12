@@ -1,9 +1,24 @@
 # RAG Chatbot for CV & Research Papers
 
-**Live demo:** https://minhduc-rag.duckdns.org — open the `demo` app and ask a question, no login needed.
+**Live demo:** https://minhduc-rag.duckdns.org (no login needed)
 
 A production-style Retrieval-Augmented Generation system: upload documents (PDF, DOCX, TXT), then chat with them.
 Every answer cites the passages it came from, and the bot declines to answer when the documents don't contain the answer.
+
+## Try it
+
+The public `qasper` app holds 60 NLP research papers from the [QASPER](https://allenai.org/data/qasper) dataset.
+These are the same papers used in the retrieval evaluation. Pick `qasper` in the app selector and ask:
+
+| Question | Expected behaviour |
+|---|---|
+| In the paper 'Deep Learning the EEG Manifold for Phonological Categorization from Active Thoughts': How many subjects does the EEG data come from? | Answers **14**, with citations |
+| In the paper 'Word2Vec: Optimal Hyper-Parameters and Their Impact on NLP Downstream Tasks': What Named Entity Recognition dataset is used? | Answers **Groningen Meaning Bank (GMB)**, with citations |
+| In the paper 'Automatic Classification of Pathology Reports using TF-IDF Features': How many annotators participated? | **Refuses**: the paper does not say |
+| Who won the 2022 FIFA World Cup? | **Refuses**: outside the documents |
+
+Click a citation to see the exact passage the answer came from. Asking the same question twice returns the cached answer instantly (marked ⚡).
+The demo is rate-limited (10 questions per minute).
 
 ## Features
 
