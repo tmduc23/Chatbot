@@ -36,3 +36,13 @@ def upgrade() -> None:
     op.add_column("retrieval_logs", sa.Column("message_id", sa.Uuid, nullable=True))
     op.create_foreign_key("fk_retrieval_logs_message", "retrieval_logs", "messages",
                           ["message_id"], ["id"], ondelete="SET NULL")
+    op.create_index("ix_retrieval_logs_message_id", "retrieval_logs", ["message_id"])
+
+
+def downgrade() -> None:
+    op.drop_index("ix_retrieval_logs_message_id", table_name="retrieval_logs")
+    op.drop_constraint("fk_retrieval_logs_message", "retrieval_logs", type_="foreignkey")
+    op.drop_column("retrieval_logs", "message_id")
+    op.drop_column("messages", "grounding_verdict")
+    op.drop_column("messages", "abstain_reason")
+    op.drop_column("messages", "sources")

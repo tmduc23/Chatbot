@@ -13,10 +13,12 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.core.exceptions import (
-    AppError, ApplicationAlreadyExistsError, ApplicationNotFoundError, ChatSessionNotFoundError,
-    DocumentNotFoundError, DuplicateDocumentError, EmbeddingError, EmptyDocumentError, FileTooLargeError,
-    IngestionError, InvalidQuestionError, LLMError, RerankError, UnsupportedFileTypeError,
+    AppError, ApplicationAlreadyExistsError, ApplicationNotFoundError, AuthDisabledError, AuthenticationError,
+    ChatSessionNotFoundError, DocumentNotFoundError, DuplicateDocumentError, EmbeddingError, EmptyDocumentError,
+    FileTooLargeError, IngestionError, InvalidQuestionError, LLMError, PermissionDeniedError, RateLimitExceededError,
+    RerankError, UnsupportedFileTypeError, UserAlreadyExistsError, UserNotFoundError, WeakPasswordError,
 )
+from app.core.metrics import UPSTREAM_ERRORS as UPSTREAM_ERRORS_TOTAL   # tên UPSTREAM_ERRORS đã dùng ở dưới
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +28,20 @@ STATUS_BY_ERROR: list[tuple[type[AppError], int]] = [
     (ApplicationNotFoundError, 404),
     (DocumentNotFoundError, 404),
     (ChatSessionNotFoundError, 404),
+    (UserNotFoundError, 404),
+    (AuthDisabledError, 404),
+    (AuthenticationError, 401),       # Phase 12b
+    (PermissionDeniedError, 403),     # Phase 12b
+    (RateLimitExceededError, 429),    # Phase 12c
+    (UserAlreadyExistsError, 409),
+
     (ApplicationAlreadyExistsError, 409),
     (DuplicateDocumentError, 409),
     (FileTooLargeError, 413),
     (UnsupportedFileTypeError, 415),
     (EmptyDocumentError, 422),
     (InvalidQuestionError, 422),
+    (WeakPasswordError, 422),
     (IngestionError, 422),
 ]
 
@@ -51,10 +61,17 @@ def status_for(exc: AppError) -> int:
 async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     if isinstance(exc, UPSTREAM_ERRORS):
         logger.warning("upstream error on %s %s: %s", request.method, request.url.path, exc)
+        UPSTREAM_ERRORS_TOTAL.labels(type(exc).__name__).inc()   # Phase 12d: đếm để cảnh báo khi LLM lỗi nhiều
         return JSONResponse(status_code=503, content={"detail": UPSTREAM_MESSAGE})
     code = status_for(exc)
     logger.info("%s %s -> %d %s", request.method, request.url.path, code, exc)
-    return JSONResponse(status_code=code, content={"detail": str(exc)})
+        # Chuẩn HTTP: 401 phải nói client cần đăng nhập KIỂU GÌ (ở đây: Bearer token)
+    headers = {"WWW-Authenticate": "Bearer"} if code == 401 else None
+    if isinstance(exc, RateLimitExceededError):
+        headers = {"Retry-After": str(exc.retry_after)}   # chuẩn HTTP: client biết chờ bao lâu
+
+    return JSONResponse(status_code=code, content={"detail": str(exc)}, headers=headers)
+
 
 
 # bắt lỗi không lường trước được ví dụ KeyError 

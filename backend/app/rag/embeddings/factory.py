@@ -12,6 +12,7 @@ from app.core.config import Settings, get_settings
 from app.core.exceptions import EmbeddingError
 from app.models import EMBEDDING_DIM
 from app.rag.embeddings.base import EmbeddingProvider
+from app.rag.clients import make_cohere_client, make_gemini_client
 
 
 def get_embedding_provider(settings: Settings | None = None) -> EmbeddingProvider:
@@ -26,7 +27,21 @@ def get_embedding_provider(settings: Settings | None = None) -> EmbeddingProvide
         provider: EmbeddingProvider = GeminiEmbeddingProvider(
             api_key=s.gemini_api_key.get_secret_value(),
             model=s.embedding_model,
-            dimension=EMBEDDING_DIM
+            dimension=EMBEDDING_DIM,
+            client=make_gemini_client(s.gemini_api_key.get_secret_value(), s.provider_timeout_seconds),
+        )
+
+    elif name == "cohere":
+        api_key = s.cohere_key("embed")
+        if api_key is None:
+            raise EmbeddingError("COHERE_EMBED_API_KEY (or COHERE_API_KEY) is not set in .env")
+        from app.rag.embeddings.cohere_embeddings import CohereEmbeddingProvider
+
+        provider = CohereEmbeddingProvider(
+            api_key=api_key,
+            model=s.cohere_embedding_model,          # vd. embed-v5.0-pro
+            dimension=EMBEDDING_DIM,
+            client=make_cohere_client(api_key, s.provider_timeout_seconds),
         )
 
     elif name == "fake":

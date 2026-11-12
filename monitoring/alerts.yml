@@ -1,0 +1,39 @@
+# Phase 12d: điều kiện cảnh báo. "for": phải đúng liên tục bấy lâu mới báo (tránh báo nhầm vì 1 lần lỗi lẻ).
+groups:
+  - name: rag
+    rules:
+      - alert: BackendDown
+        expr: up{job="rag-backend"} == 0
+        for: 1m
+        annotations:
+          summary: "Prometheus không đọc được /metrics của backend"
+
+      - alert: HighErrorRate
+        # > 5% request trả 5xx trong 5 phút
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+            / sum(rate(http_requests_total[5m])) > 0.05
+        for: 5m
+        annotations:
+          summary: "Hơn 5% request lỗi 5xx"
+
+      - alert: UpstreamErrors
+        # Gemini / Cohere / OpenRouter lỗi (hết quota, sai key, quá tải)
+        expr: sum(increase(upstream_errors_total[10m])) > 5
+        annotations:
+          summary: "LLM / embedding / rerank lỗi nhiều lần trong 10 phút"
+
+      - alert: SlowAnswers
+        # p95 thời gian trả lời /chat
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{route="/api/v1/chat"}[10m]))) > 30
+        for: 10m
+        annotations:
+          summary: "p95 thời gian trả lời chat > 30 giây"
+
+      - alert: DocumentQueueStuck
+        # worker (Phase 12a) chết hoặc không theo kịp
+        expr: documents{status="PENDING"} > 0 and documents{status="PROCESSING"} == 0
+        for: 10m
+        annotations:
+          summary: "Có document PENDING mà không ai xử lý suốt 10 phút"

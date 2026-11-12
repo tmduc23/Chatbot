@@ -42,3 +42,11 @@ def test_clean_keeps_text_without_citations() -> None:
     check = clean_citations("Có kinh nghiệm Docker.", valid={1})
     assert check.text == "Có kinh nghiệm Docker."
     assert check.cited == [] and check.invalid == []
+
+
+
+def test_fullwidth_brackets_are_normalized() -> None:
+    # gpt-oss (Groq) hay viết 【Source 1】 thay vì [Source 1]
+    check = clean_citations("Force keeps it moving 【Source 1】 【Source 2】 .", valid={1, 2})
+    assert check.cited == [1, 2]
+    assert check.text == "Force keeps it moving [Source 1] [Source 2]."

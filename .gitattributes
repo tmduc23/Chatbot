@@ -1,0 +1,6 @@
+# Phase 13: file chạy trên VPS Linux phải giữ xuống dòng kiểu Linux (LF), kể cả khi commit từ Windows.
+# Không có dòng này, Git trên Windows có thể đổi sang CRLF -> bash báo "$'\r': command not found".
+*.sh        text eol=lf
+Caddyfile   text eol=lf
+*.yml       text eol=lf
+.env*       text eol=lf

@@ -49,7 +49,7 @@ from app.db.base import Base, CreatedAtMixin
 # migration: tạo bảng chunks trong database, dùng để lưu thông tin các chunk của document
 # Quyết định SCHEMA: gemini-embedding-001 768 chiều
 
-EMBEDDING_DIM = 768
+EMBEDDING_DIM = 1536
 
 # Cấu hình full-text search của Postgres.
 # Simple = tách từ + viết thường

@@ -68,8 +68,9 @@ def get(db: Session, application_id: str) -> Application | None:
 """
 
 # Thêm application rồi flush, không commit
-def create(db: Session, application_id: str, name: str, description: str | None = None) -> Application:
-    app = Application(id=application_id, name=name, description=description)
+def create(db: Session, application_id: str, name: str, description: str | None = None,
+           is_public: bool = False) -> Application:
+    app = Application(id=application_id, name=name, description=description, is_public=is_public)
     db.add(app)
     db.flush()
     return app

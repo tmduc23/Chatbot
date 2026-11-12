@@ -26,6 +26,19 @@ logger = logging.getLogger(__name__)
 # 503: Service Unavailable
 RETRYABLE_STATUS = {429, 500, 503}
 
+# gemini-embedding-2: nhiệm vụ nằm trong chính văn bản thay cho task_type
+QUERY_PREFIX = "task: search result | query: "
+DOCUMENT_PREFIX = "title: none | text: "
+
+
+def uses_task_type(model: str) -> bool:
+    """Chỉ dòng gemini-embedding-001 (và cũ hơn) nhận task_type; từ gemini-embedding-2 thì không.
+
+    >>> uses_task_type("gemini-embedding-001"), uses_task_type("gemini-embedding-2")
+    (True, False)
+    """
+    return not model.startswith("gemini-embedding-2")
+
 
 class GeminiEmbeddingProvider(EmbeddingProvider):
     BATCH_SIZE = 100
@@ -52,18 +65,28 @@ class GeminiEmbeddingProvider(EmbeddingProvider):
     def _embed(self, texts: list[str], task_type: str) -> list[list[float]]:
         from google.genai import types      # import các kiểu dữ liệu/config của Google GenAI SDK
 
+        contents: list = texts              # MỚI: thứ gửi lên API (mặc định = list chuỗi, như bản 001)
+
         # Cấu hình config
-        config = types.EmbedContentConfig(task_type=task_type, output_dimensionality=self.dimension)
-        for attempt in range (self.MAX_RETRIES):
+        if uses_task_type(self.model):
+            config = types.EmbedContentConfig(task_type=task_type, output_dimensionality=self.dimension)
+        else:
+            prefix = QUERY_PREFIX if task_type == "RETRIEVAL_QUERY" else DOCUMENT_PREFIX
+            config = types.EmbedContentConfig(output_dimensionality=self.dimension)
+            # MỚI: gemini-embedding-2 coi list chuỗi là các PHẦN của 1 nội dung -> trả về 1 vector chung.
+            # Bọc mỗi chuỗi thành 1 Content riêng -> mỗi chuỗi 1 vector.
+            contents = [types.Content(parts=[types.Part(text=prefix + t)]) for t in texts]
+
+        for attempt in range(self.MAX_RETRIES):
             try:
                 # Gọi Gemini Embedding API, trả về response, thành công thì out vòng for
-                response = self._client.models.embed_content(model=self.model, contents=texts, config=config)
+                response = self._client.models.embed_content(model=self.model, contents=contents, config=config)  # ĐỔI: contents=contents
                 break
             except Exception as exc: # SDK ném APIError có thuộc tính .code (HTTP status)
-                code = getattr(exc, "code", None)       # lấy thuộc tính của exception, nếu không có trả về None 
+                code = getattr(exc, "code", None)       # lấy thuộc tính của exception, nếu không có trả về None
                 if code in RETRYABLE_STATUS and attempt < self.MAX_RETRIES - 1:     # retry chỉ backoff khi gặp 429, 500, 503
                     wait = min(60, 2 ** (attempt + 2))  # 4s, 8s, 16s, 32s
-                    logger.warning("Gemnini embedding HTTP %s retry in %ss", code, wait)
+                    logger.warning("Gemini embedding HTTP %s retry in %ss", code, wait)
                     time.sleep(wait)
                     continue
                 raise EmbeddingError(f"Gemini embedding failed: {exc}") from exc

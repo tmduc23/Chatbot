@@ -89,6 +89,14 @@ def list_documents(db: Session, application_id: str) -> list[Document]:
         .order_by(Document.created_at, Document.filename)
     ))
 
+def list_all_chunks(db: Session, application_id: str) -> list[Chunk]:
+    """Mọi chunk của 1 application (đã có vector hay chưa) — dùng khi đổi embedding model."""
+    return list(db.scalars(
+        select(Chunk)
+        .where(Chunk.application_id == application_id)
+        .order_by(Chunk.document_id, Chunk.chunk_index)
+    ))
+
 def get_document(db: Session, application_id: str, document_id: uuid.UUID) -> Document | None:
     return db.scalars(
         select(Document).where(Document.application_id == application_id, Document.id == document_id)

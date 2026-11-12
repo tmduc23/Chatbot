@@ -141,7 +141,7 @@ def test_to_response_matches_api_format() -> None:
     data = _service(FakeLLM("Docker [Source 1].")).ask("Docker Kubernetes", "cv").to_response()
     assert data["answer"] == "Docker [Source 1]." and data["abstained"] is False
     assert data["sources"][0]["filename"] == "doc1.txt"
-    assert set(data["sources"][0]) == {"number", "document_id", "filename", "page", "chunk_id"}
+    assert set(data["sources"][0]) == {"number", "document_id", "filename", "page", "chunk_id", "text"}
     json.dumps(data)                 # chuyển được sang JSON (không còn UUIDs)
 
 # --- Phase 7: grounding check (tùy chọn) ---

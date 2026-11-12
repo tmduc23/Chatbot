@@ -22,7 +22,7 @@ from app.rag.retrieval.base import RetrievedChunk
 @dataclass(frozen=True)
 class RerankedChunk:
     chunk: RetrievedChunk       # chunk được retrieve thông qua RRF
-    score: float                # điểm của reranker(Gemini: 0.0 - 1.0)
+    score: float                # điểm của reranker
     retrieval_rank: int         # hạng TRƯỚC khi rerank (bắt đầu từ 1) -  để so sánh trước/sau
     # True =  score do reranker chấm (so được với RERANKER_MIN_SCORE), thang 0-1, so được với ngưỡng
     # False = không có ai chấm (PassthroughReranker, hoặc reranker lỗi rồi fail-open):

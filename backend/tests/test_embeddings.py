@@ -70,8 +70,8 @@ class _StubModels:
         return SimpleNamespace(embeddings=[SimpleNamespace(values=vec) for _ in contents])
 
 
-def _gemini(stub_models: _StubModels) -> GeminiEmbeddingProvider:
-    return GeminiEmbeddingProvider(api_key="test", model="gemini-embedding-001",
+def _gemini(stub_models: _StubModels, model: str = "gemini-embedding-001") -> GeminiEmbeddingProvider:
+    return GeminiEmbeddingProvider(api_key="test", model=model,
                                    dimension=EMBEDDING_DIM, client=SimpleNamespace(models=stub_models))
 
 
@@ -92,6 +92,19 @@ def test_gemini_query_uses_query_task_type() -> None:
     stub = _StubModels()
     _gemini(stub).embed_query("Duc biết Docker không?")
     assert stub.calls[-1][2].task_type == "RETRIEVAL_QUERY"
+
+def test_gemini_embedding_2_uses_prefix_instead_of_task_type() -> None:
+    stub = _StubModels()
+    provider = _gemini(stub, model="gemini-embedding-2")
+    provider.embed_documents(["chunk A"])
+    provider.embed_query("Duc biết Docker không?")
+
+    (_, docs, doc_config), (_, query, query_config) = stub.calls
+    # mỗi chuỗi là 1 Content riêng (list chuỗi trần sẽ bị gộp thành 1 vector)
+    assert [c.parts[0].text for c in docs] == ["title: none | text: chunk A"]
+    assert [c.parts[0].text for c in query] == ["task: search result | query: Duc biết Docker không?"]
+    assert doc_config.task_type is None and query_config.task_type is None     # không gửi task_type
+    assert query_config.output_dimensionality == EMBEDDING_DIM
 
 # Kiểm tra retry, 429 thì thử lại
 def test_gemini_retries_on_rate_limit(monkeypatch: pytest.MonkeyPatch) -> None:

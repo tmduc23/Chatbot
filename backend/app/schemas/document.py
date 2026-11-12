@@ -19,6 +19,7 @@ class DocumentOut(BaseModel):
     file_type: str
     status: DocumentStatus
     error_message: str | None
+    attempts: int                   # đã xử lý mấy lần
     created_at: datetime
 
     # KHÔNG trả storage_path (đường dẫn trên server) và file_hash: client không cần, lộ cấu trúc server

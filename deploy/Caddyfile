@@ -1,0 +1,46 @@
+# Phase 13: Caddy = cửa duy nhất từ Internet vào hệ thống.
+#   - tự xin + tự gia hạn chứng chỉ HTTPS (Let's Encrypt) cho {$DOMAIN}, tự chuyển http -> https
+#   - /api/*, /health, /ready -> backend;  mọi đường dẫn khác -> frontend (Next.js)
+#   - /docs, /openapi.json, /metrics KHÔNG được chuyển vào backend -> từ Internet chỉ thấy 404 của frontend
+{
+	# Let's Encrypt gửi thư vào đây khi chứng chỉ sắp hết hạn mà gia hạn tự động bị lỗi
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Upload tối đa 10 MB (MAX_UPLOAD_MB) + phần thừa của multipart
+	request_body {
+		max_size 12MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	@backend path /api/* /health /ready
+	handle @backend {
+		# Mặc định Caddy BỎ X-Forwarded-For mà client tự gửi lên và ghi IP thật của client.
+		# Nhờ vậy backend (TRUST_FORWARDED_FOR=true) đếm rate limit đúng người, không bị giả IP.
+		reverse_proxy backend:8000 {
+			# LLM miễn phí có thể chậm (LLM_TIMEOUT_SECONDS=180): đừng cắt request giữa chừng
+			transport http {
+				response_header_timeout 200s
+			}
+		}
+	}
+
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

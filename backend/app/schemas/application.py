@@ -18,6 +18,8 @@ class ApplicationCreate(BaseModel):
     id: str = Field(pattern=APPLICATION_ID_PATTERN, examples=["cv"])
     name: str = Field(min_length=1, max_length=200, examples=["CV của Đức"])
     description: str | None = Field(default=None, max_length=2000)
+    is_public: bool = False   # Phase 12b: true = khách không đăng nhập cũng chat được
+
 
 
 class ApplicationOut(BaseModel):
@@ -29,4 +31,5 @@ class ApplicationOut(BaseModel):
     id: str
     name: str
     description: str | None
+    is_public: bool
     created_at: datetime

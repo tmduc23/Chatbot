@@ -31,11 +31,13 @@ def main() -> None:
     parser.add_argument("--size", type=int, default=s.chunk_size, help=f"token, mặc định {s.chunk_size}")
     parser.add_argument("--overlap", type=int, default=s.chunk_overlap, help=f"token, mặc định {s.chunk_overlap}")
     parser.add_argument("--full", action="store_true", help="In toàn bộ nội dung mỗi chunk")
+    parser.add_argument("--strategy", choices=["size", "section"], default=s.chunk_strategy, help=f"cách chunk, mặc định {s.chunk_strategy}")
     args = parser.parse_args()
 
     counter = get_token_counter(s.tokenizer_encoding)
     file_type = args.file.suffix.lower().lstrip(".")
-    chunks = parse_document(args.file, file_type, args.size, args.overlap, counter)
+    chunks = parse_document(args.file, file_type, args.size, args.overlap, counter, strategy=args.strategy, 
+                            min_tokens=s.chunk_min_tokens, header=s.chunk_section_header)
 
     print(f"\nFile: {args.file}  tokenizer={s.tokenizer_encoding}  "
           f"chunk_size={args.size} tokens  chunk_overlap={args.overlap} tokens")
@@ -59,6 +61,7 @@ def main() -> None:
         print(f"Tokens/chunk: min={min(tokens)} max={max(tokens)} trung bình={sum(tokens) / len(tokens):.0f}")
         print(f"Tổng: {sum(tokens)} tokens")
         print("Chunk vượt chunk_size:", too_long or "không có ✅")
+        print(f"chunk_size={args.size} tokens chunk_overlap={args.overlap} tokens strategy={args.strategy}")
 
 
 if __name__ == "__main__":

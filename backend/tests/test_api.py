@@ -65,7 +65,10 @@ def settings(tmp_path: Path) -> Settings:
         app_env="development", admin_api_key=None, storage_dir=str(tmp_path / "storage"), max_upload_mb=1,
         chunk_size=500, chunk_overlap=50, tokenizer_encoding="whitespace",
         embedding_provider="fake", reranker_provider="fake", reranker_min_score=0.3,
-        llm_provider="fake", grounding_check=False, chat_condense_question=True, chat_history_turns=3
+        llm_provider="fake", grounding_check=False, chat_condense_question=True, chat_history_turns=3,
+        background_ingestion=False,
+        auth_enabled=False,           # Phase 12b: file này test chế độ Phase 9 (X-API-Key); đăng nhập ở test_auth_api.py
+        rate_limit_enabled=False, answer_cache_enabled=False,   # Phase 12c: test riêng ở test_rate_limit / test_answer_cache
     )
 
 @pytest.fixture
@@ -423,3 +426,30 @@ def test_condense_prompt_contains_history_and_truncates_long_turns() -> None:
     prompt = build_condense_prompt([("user", "Q1"), ("assistant", "A" * 2000)], "Q2")
     assert "User: Q1" in prompt and "Follow-up question: Q2" in prompt
     assert "A" * 500 + "..." in prompt and "A" * 501 not in prompt
+
+
+# ======================= Phase 10b: đoạn trích của nguồn =======================
+
+def test_chat_sources_include_excerpt_and_session_keeps_it(client: TestClient, cv_app: str) -> None:
+    body = client.post(f"{API}/chat", json={"application_id": cv_app, "query": "Which project did Duc build?"}).json()
+    src = body["sources"][0]
+    assert src["text"] in {CV_TEXT, JOB_TEXT}            # đúng nội dung chunk, không phải tên file
+
+    detail = client.get(f"{API}/chat/sessions/{body['session_id']}", params={"application_id": cv_app}).json()
+    assert detail["messages"][1]["sources"][0]["text"] == src["text"]   # mở lại phiên vẫn còn đoạn trích
+
+
+def test_message_saved_before_phase10b_has_null_text(client: TestClient, cv_app: str, db: Session) -> None:
+    from app.repositories import chat_repository as chat_repo
+
+    session = chat_repo.create_session(db, cv_app)
+    old_source = {"number": 1, "document_id": str(uuid.uuid4()), "filename": "cv.txt", "page": None,
+                  "chunk_id": str(uuid.uuid4())}                      # dạng cũ: chưa có "text"
+    chat_repo.add_message(db, session, "user", "Old question?")
+    chat_repo.add_message(db, session, "assistant", "Old answer [Source 1].", sources=[old_source])
+    db.commit()
+
+    r = client.get(f"{API}/chat/sessions/{session.id}", params={"application_id": cv_app})
+    assert r.status_code == 200, r.text                                # không vỡ vì thiếu field
+    assert r.json()["messages"][1]["sources"][0]["text"] is None
+

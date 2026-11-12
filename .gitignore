@@ -7,3 +7,33 @@ node_modules/
 .next/
 storage/
 
+eval/viquad2/validation.parquet
+eval/qasper/*.json
+eval/qasper/*.tgz
+
+# PeerQA: CC BY-NC-SA 4.0, không commit dữ liệu
+eval/peerqa/
+eval/dataset_peerqa.json
+
+# UIT-ViQuAD 2.0: không commit dữ liệu và chữ trích ra
+eval/viquad2/
+eval/dataset_viquad2.json
+eval/results/*viquad2*
+
+# kết quả eval: Excel, và các lần chạy trên CV (dữ liệu cá nhân)
+eval/results/*.xlsx
+eval/results/*-cv-*.json
+
+# bản sao lưu database
+backup/
+
+# Phase 12d: token để Prometheus đọc /metrics (khi deploy)
+monitoring/metrics_token
+
+# Phase 13
+backups/
+.env.prodtest
+
+eval/qasper/
+eval/results/
+backend/ready.txt

@@ -1,0 +1,234 @@
+[
+  {
+    "id": "a01",
+    "question": "Bạn ấy học trường đại học nào?",
+    "answerable": true,
+    "expected_texts": [
+      "Bách khoa Hà Nội (HUST)"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a02",
+    "question": "Which university did he study at?",
+    "answerable": true,
+    "expected_texts": [
+      "Bách khoa Hà Nội (HUST)"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a03",
+    "question": "GPA đại học của bạn ấy là bao nhiêu?",
+    "answerable": true,
+    "expected_texts": [
+      "GPA: 3.35/4.0"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a04",
+    "question": "What programming languages does he know?",
+    "answerable": true,
+    "expected_texts": [
+      "Python (PyTorch, NumPy"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a05",
+    "question": "Bạn ấy có kinh nghiệm dùng Docker không?",
+    "answerable": true,
+    "expected_texts": [
+      "Git, Docker, Google Colab"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a06",
+    "question": "containerization and deployment tools",
+    "answerable": true,
+    "expected_texts": [
+      "Git, Docker, Google Colab"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a07",
+    "question": "What is his English level?",
+    "answerable": true,
+    "expected_texts": [
+      "TOEIC 875"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a08",
+    "question": "Bạn ấy đạt những giải thưởng gì?",
+    "answerable": true,
+    "expected_texts": [
+      "Giải Nhì, Bảo vệ đồ án tốt nghiệp"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a09",
+    "question": "Bạn ấy nghiên cứu ở lab nào?",
+    "answerable": true,
+    "expected_texts": [
+      "Phân tích tín hiệu (IPSAL)"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a10",
+    "question": "What model did he propose for breast ultrasound segmentation?",
+    "answerable": true,
+    "expected_texts": [
+      "Đề xuất MFBF-Net"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a11",
+    "question": "Mô hình MFBF-Net đạt kết quả bao nhiêu trên tập BUSI?",
+    "answerable": true,
+    "expected_texts": [
+      "82.62%DSC"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a12",
+    "question": "How many parameters does his model have?",
+    "answerable": true,
+    "expected_texts": [
+      "1.87 triệu tham số"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "a13",
+    "question": "Bạn ấy có công bố khoa học nào không?",
+    "answerable": true,
+    "expected_texts": [
+      "GTSD 2026"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "a14",
+    "question": "How can I contact him?",
+    "answerable": true,
+    "expected_texts": [
+      "tranminhduc230204@gmail.com"
+    ],
+    "answer_contains": [],
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "u01",
+    "question": "Mức lương mong muốn của bạn ấy là bao nhiêu?",
+    "answerable": false,
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "u02",
+    "question": "Bạn ấy đã lập gia đình chưa?",
+    "answerable": false,
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "u03",
+    "question": "Bạn ấy có bằng lái xe ô tô không?",
+    "answerable": false,
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "u04",
+    "question": "Bạn ấy có thể bắt đầu đi làm từ ngày nào?",
+    "answerable": false,
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "u05",
+    "question": "What is the candidate's favorite food?",
+    "answerable": false,
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "u06",
+    "question": "Does the candidate have experience building games with Unity?",
+    "answerable": false,
+    "tags": [
+      "en"
+    ]
+  },
+  {
+    "id": "u07",
+    "question": "Bạn ấy có dùng pgvector không?",
+    "answerable": false,
+    "tags": [
+      "vi"
+    ]
+  },
+  {
+    "id": "u08",
+    "question": "Has he built web APIs with FastAPI?",
+    "answerable": false,
+    "tags": [
+      "en"
+    ]
+  }
+]

@@ -15,3 +15,7 @@ google-genai>=1.0
 cohere>=5.0
 openai>=1.50
 python-multipart>=0.0.9
+openpyxl>=3.1 
+pyarrow>=15.0  
+pyjwt>=2.8                # Phase 12b: ký/kiểm token đăng nhập (JWT)
+prometheus-client>=0.20     # Phase 12d: endpoint /metrics cho Prometheus

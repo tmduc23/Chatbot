@@ -4,7 +4,6 @@ MỤC ĐÍCH: Tạo retriever theo cấu hình RETRIEVAL_MODE (vector | keyword 
 Nhờ vậy có thể đổi chiến lược tìm kiếm chỉ bằng .env, hoặc truyền `mode`
 để so sánh các chiến lược với nhau (scripts/compare_retrieval.py).
 """
-
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, get_settings
@@ -28,10 +27,12 @@ def build_retriever(
     if mode not in RETRIEVAL_MODES:
         raise ValueError(f"Unknown retrieval mode '{mode}' (use: {', '.join(RETRIEVAL_MODES)})")
 
+    keyword = KeywordRetriever(db, ranking=s.keyword_ranking, k1=s.bm25_k1, b=s.bm25_b)
     if mode == "keyword":
-        return KeywordRetriever(db)
+        return keyword
 
     vector = VectorRetriever(db, embedder or get_embedding_provider(s))
     if mode == "vector":
         return vector
-    return HybridRetriever(vector, KeywordRetriever(db), candidate_k=s.retrieval_candidate_k, rrf_k=s.rrf_k)
+    return HybridRetriever(vector, keyword, candidate_k=s.retrieval_candidate_k, rrf_k=s.rrf_k,
+                           keyword_weight=s.rrf_keyword_weight)

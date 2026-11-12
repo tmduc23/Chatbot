@@ -24,6 +24,9 @@ class ChatRequest(BaseModel):
     application_id: str = Field(min_length=1, max_length=50, examples=["cv"])
     session_id: uuid.UUID | None = Field(default=None, description="null = bắt đầu phiên chat mới")
     query: str = Field(min_length=1, max_length=MAX_QUESTION_CHARS, examples=["Bạn ấy đã làm những dự án nào"])
+    # Chế độ paper: null = hỏi cả application; [id...] = chỉ tìm trong các tài liệu này (tối đa 10)
+    document_ids: list[uuid.UUID] | None = Field(default=None, min_length=1, max_length=10,
+                                                 description="null = hỏi cả application")
 
 
 # Đầu ra: POST /chat
@@ -36,6 +39,7 @@ class SourceOut(BaseModel):
     filename: str           # tên file để người đọc nhận ra, vd "cv.pdf"
     page: int | None        # số trang (PDF): None với file không có trang (.txt, .md)
     chunk_id: uuid.UUID     # đoạn cụ thể đã dùng
+    text: str | None = None     # Phase 10b: đoạn trích LLM đã đọc. Tin nhắn lưu trước Phase 10b không có -> None
 
 
 class ChatMetadata(BaseModel):
@@ -47,6 +51,7 @@ class ChatMetadata(BaseModel):
     abstain_reason: str | None          # lý do từ chối: None = có trả lời
     standalone_question: str | None     # câu hỏi sau khi condenser viết lại (None = giữ nguyên câu gốc)
     latency_ms: float                   # thời gian xử lý của lượt chat
+    cached: bool = False                # Phase 12c: True = lấy từ cache câu trả lời, không gọi API nào
 
 
 class ChatResponse(BaseModel):

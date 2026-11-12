@@ -8,11 +8,17 @@ Phase 4 thêm KeywordRetriever và HybridRetriever
 
 'application_id' là tham số BẮT BUỘC: không có cách nào gọi retrive()
 mà quên lọc theo application
+
+'document_id' (chế độ paper): None = tìm trong CẢ application (như cũ);
+[id1, id2] = chỉ tìm trong các tài liệu này (người dùng đã chọn paper để hỏi)
+Lọc tài liệu luôn đi KÈM lọc application, không thay thế nói: id của tài liệu thuộc
+application khác -> không có kết quả, chứ không bị lộ dữ liệu.
 """
 
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from collections.abc import Sequence
 
 # frozen : read-only
 @dataclass(frozen=True)
@@ -35,5 +41,5 @@ class RetrievedChunk:
 
 class Retriever(ABC):
     @abstractmethod
-    def retrieve(self, query: str, application_id: str, top_k: int) -> list[RetrievedChunk]:
+    def retrieve(self, query: str, application_id: str, top_k: int, document_ids: Sequence[uuid.UUID] | None = None) -> list[RetrievedChunk]:
         ...

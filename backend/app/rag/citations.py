@@ -18,7 +18,7 @@ import re
 from dataclasses import dataclass
 
 # [Source 1] | [Sources 1, 3] | [source 1, Source 3] — không phân biệt hoa thường
-_CITATION = re.compile(r"\[\s*sources?\s+(\d+(?:\s*,\s*(?:sources?\s+)?\d+)*)\s*\]", re.IGNORECASE)
+_CITATION = re.compile(r"[\[【]\s*sources?\s+(\d+(?:\s*,\s*(?:sources?\s+)?\d+)*)\s*[\]】]", re.IGNORECASE)
 _NUMBER = re.compile(r"\d+")        
 
 

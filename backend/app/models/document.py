@@ -13,7 +13,8 @@ Vai trò chinh:
 
 import enum
 import uuid
-from sqlalchemy import Enum, ForeignKey, String, Text, UniqueConstraint, Uuid
+from datetime import datetime
+from sqlalchemy import Enum, ForeignKey, String, Text, UniqueConstraint, Uuid, Integer, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base, TimestampMixin
 
@@ -41,5 +42,15 @@ class Document(TimestampMixin, Base):
     error_message: Mapped[str | None] = mapped_column(Text)  # lưu thông tin lỗi nếu status = FAILED
 
     chunks: Mapped[list["Chunk"]] = relationship(  # noqa: F821
+        back_populates="document", cascade="all, delete-orphan"
+    )
+
+    # Hàng đợi xử lý nền 
+    attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0")  # đã thử xử lý mấy lần
+    available_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    locked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))     # lúc worker nhận việc
+    chunks: Mapped[list["Chunk"]] = relationship(
         back_populates="document", cascade="all, delete-orphan"
     )

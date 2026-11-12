@@ -125,5 +125,4 @@ def test_factory_build_cohere() -> None:
 # Thiếu API key -> báo lỗi
 def test_factory_cohere_requires_key() -> None:
     with pytest.raises(ValueError):
-        get_reranker(Settings(reranker_provider="cohere",
-        cohere_api_key=None))
+        get_reranker(Settings(reranker_provider="cohere", cohere_api_key=None, cohere_rerank_api_key=None))

@@ -22,6 +22,8 @@ MỤC ĐÍCH: Tìm các chunk có NGHĨA gần với câu hỏi nhất, bằng p
 
 import logging
 import time
+import uuid
+from collections.abc import Sequence
 
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
@@ -42,7 +44,7 @@ class VectorRetriever(Retriever):
         self.embedder = embedder
         self.iterative_scan = iterative_scan
 
-    def retrieve(self, query: str, application_id: str, top_k: int) -> list[RetrievedChunk]:
+    def retrieve(self, query: str, application_id: str, top_k: int, document_ids: Sequence[uuid.UUID] | None = None) -> list[RetrievedChunk]:
         if not query.strip():
             return []
 
@@ -63,14 +65,18 @@ class VectorRetriever(Retriever):
             .order_by(distance)         # xếp theo distance, top k
             .limit(top_k)
         )
+
+        if document_ids:
+            stmt = stmt.where(Chunk.document_id.in_(list(document_ids)))
+
         # is_local = True(tham số thứ 3) giống SET LOCAL: chỉ có hiệu lực tới hết transaction hiện tại
         self.db.execute(select(func.set_config("hnsw.iterative_scan", self.iterative_scan, True)))
         rows = self.db.execute(stmt).all()  # thực hiện để chạy SQL vào PostgreSQL
         t2 = time.perf_counter()
 
         logger.info(
-            "vector_search app=%s top_k=%d results=%d embed_ms=%.0f search_ms=%.0f",
-            application_id, top_k, len(rows), (t1 - t0) * 1000, (t2 - t1) * 1000
+            "vector_search app=%s docs=%s top_k=%d results=%d embed_ms=%.0f search_ms=%.0f",
+            application_id, len(document_ids) if document_ids else "all", top_k, len(rows), (t1 - t0) * 1000, (t2 - t1) * 1000,
         )
 
         return [

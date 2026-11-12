@@ -207,3 +207,100 @@ def chunk_pages(
             result.append(TextChunk(text=piece, chunk_index=len(result), page=page.page,
                                     token_count=counter.count(piece)))
     return result
+
+
+
+# chunk_sections (CHUNK_STRATEGY=section): theo ĐOẠN VĂN + MỤC
+# Dòng tiêu đề mục kiểu Markdown: "## Results", "### 4.2. Ablation"
+_HEADING = re.compile(r"^#{1,6}\s+(.+)$")
+
+def _document_title(pages: list[PageText]) -> str | None:
+    """
+    Tiêu đề tài liệu = khối chữ ĐẦU TÊN, nhưng chỉ khi tài liệu có dòng "##mục"
+    (file .txt của QASPER/PeerQA: dòng 1 là tiêu đề paper, sau đó là các mục).
+    Không có mục nào (CV, PDF thường) -> None: không đoán bừa tiêu đề.
+
+    >>> _document_title([PageText("My Paper\\n\\n## Intro\\n\\nText.", None)])
+    'My Paper'
+    >>> _document_title([PageText("Just a paragraph.\\n\\nAnother one.", None)]) is None
+    True
+    """
+    text = "\n\n".join(p.text for p in pages)
+    if not any(_HEADING.match(line) for line in text.splitlines()):
+        return None
+    first = text.strip().split("\n\n", 1)[0].strip()
+    if "\n" in first or _HEADING.match(first) or len(first) > 300:
+        return None
+    
+    return first
+
+
+def chunk_sections(
+    pages: list[PageText], chunk_size: int, counter: TokenCounter,
+    min_tokens: int = 40, header: bool = True,
+) -> list[TextChunk]:
+    """
+    Chunk theo CẤU TRÚC thay vì theo số token. Dùng cho paper khoa học (CHUNK_STRATEGY=section)
+
+    Khác chunk_pages 3 chỗ:
+        1. Mỗi ĐOẠN VĂN là 1 chunk. Đoạn văn ngắn hơn min_tokens thì gộp với đoạn sau, nhưng
+        KHÔNG BAO GIỜ gộp qua ranh giới MỤC ("##..."). Đoạn dài hơn chunk_size thì tách ở ranh 
+        giới câu bằng split_text (không overlap).
+        2. Đầu mỗi chunk có 1 dòng ngữ cảnh "Tiêu đề -> Mục" (header=True), để chunk tự nói nó thuộc
+        paper nào, phần nào. Dòng này tính vào chunk_size.
+        3. Không overlap: ranh giới đoạn văn là ranh giới ý, không cần lặp lại câu.
+    """
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be > 0")
+    title = _document_title(pages)
+    result: list[TextChunk] = []
+    section = ""                        # tên section hiện tại
+    pending: list[str] = []             # các paragraph đang chờ gộp (cùng mục, cùng trang)
+
+    # Tạo dòng ngữ cảnh đầu chunk
+    def prefix() -> str:
+        if not header or not (title or section):
+            return ""
+        line = " > ".join(x for x in (title, section) if x) + "\n"
+        # dòng ngữ cảnh dài quá nửa chunk (tiêu đề rất dài) -> bỏ, giữ chỗ cho nội dung
+        return line if counter.count(line) <= chunk_size // 2 else ""
+
+    # Đóng gói thành TextChunk và đưa vào result
+    def emit(body: str, page: int | None) -> None:
+        text = prefix() + body
+        result.append(TextChunk(text=text, chunk_index=len(result), page=page, token_count=counter.count(text)))
+
+
+    # xuất các đoạn trong 1 pending thành 1 chunk
+    def flush(page: int | None) -> None:
+        if pending:
+            emit("\n\n".join(pending), page)
+            pending.clear()
+
+    for page in pages:
+        for block in (b.strip() for b in page.text.split("\n\n")):
+            if not block or block == title:
+                continue
+            first, separator, rest = block.partition("\n")
+            heading = _HEADING.match(first)
+            if heading:
+                flush(page.page)            # "## Tên mục" -> đóng mục cũ, sang mục mới
+                section = heading.group(1).strip()      # đổi tên sang thư mục mới
+                block = rest.strip()        # trường hợp đoạn dính ngay dưới dòng tiêu đề
+                if not block: 
+                    continue
+            budget = chunk_size - counter.count(prefix())         # chỗ còn lại cho nội dung
+
+            if counter.count(block) > budget:                   # đoạn quá dài -> tách ở ranh giới câu
+                flush(page.page)                                # flush các paragraph trong pending 
+                for piece in split_text(block, budget, 0, counter):     # split_text(): chia block hiện tại thành các phần nhỏ hơn hoặc bằng budget
+                    emit(piece, page.page)                              # xuất từng thành phần thành chunk riêng
+                continue
+            if pending and counter.count("\n\n".join([*pending, block])) > budget:      # block mới + pending > budget
+                flush(page.page)                                                        # xuất paragraph cũ thành chunk
+            pending.append(block)                                                       # sau đó thực hiện append
+            if counter.count("\n\n".join(pending)) >= min_tokens:       
+                flush(page.page)
+        flush(page.page)            # không gộp đoạn qua 2 trang -> số trang luôn đúng
+    return result
+    

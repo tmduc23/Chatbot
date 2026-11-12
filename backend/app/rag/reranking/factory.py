@@ -6,6 +6,7 @@ MỤC ĐÍCH: Chọn reranker theo cấu hình RERANKER_PROVIDER (gemini | coher
 
 from app.core.config import Settings, get_settings
 from app.rag.reranking.base import PassthroughReranker, Reranker
+from app.rag.clients import make_cohere_client, make_gemini_client
 
 PROVIDERS = "gemini | coher | none | fake"
 
@@ -23,19 +24,26 @@ def get_reranker(settings: Settings | None = None) -> Reranker:
     if name == "fake":
         from app.rag.reranking.fake import FakeReranker
         return FakeReranker()
+    
+    
     if name == "gemini":
         if s.gemini_api_key is None or not s.gemini_api_key.get_secret_value():
             raise ValueError("GEMINI_API_KEY is not set in .env")
         from app.rag.reranking.gemini import GeminiReranker
         return GeminiReranker(api_key=s.gemini_api_key.get_secret_value(),
-                              model=s.reranker_model, max_chars=s.reranker_max_chars)
+                              model=s.reranker_model, max_chars=s.reranker_max_chars,
+                              client=make_gemini_client(s.gemini_api_key.get_secret_value(),
+                                                        s.provider_timeout_seconds))
 
     if name == "cohere":
-        if s.cohere_api_key is None or not s.cohere_api_key.get_secret_value():
-            raise ValueError("COHERE_API_KEY is not set in .env")
+        api_key = s.cohere_key("rerank")
+        if api_key is None:
+            raise ValueError("COHERE_RERANK_API_KEY (or COHERE_API_KEY) is not set in .env")
         from app.rag.reranking.cohere_reranker import CohereReranker
-        return CohereReranker(api_key=s.cohere_api_key.get_secret_value(),
-                              model=s.cohere_rerank_model, max_chars=s.reranker_max_chars)
+        return CohereReranker(api_key=api_key,
+                              model=s.cohere_rerank_model, max_chars=s.reranker_max_chars,
+                              client=make_cohere_client(api_key, s.provider_timeout_seconds))
+
 
     raise ValueError(f"Unknown RERANKER_PROVIDER '{s.reranker_provider}' (use: {PROVIDERS})")
 

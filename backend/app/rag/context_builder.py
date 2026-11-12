@@ -34,6 +34,7 @@ class Source:
     page: int | None
     chunk_index: int
     score: float             # điểm reranker 
+    text:  str = ""          # Phase 10b: đúng đoạn chữ đã đưa vào context -> frontend hiện "đoạn trích"
 
     def to_dict(self) -> dict:
             """Format trả về cho frontend (spec mục 13). UUID -> str để chuyển được sang JSON."""
@@ -43,6 +44,7 @@ class Source:
                 "filename": self.filename,
                 "page": self.page,
                 "chunk_id": str(self.chunk_id),
+                "text": self.text,
             }
 
 @dataclass(frozen=True)
@@ -91,6 +93,6 @@ def build_context(chunks: list[RerankedChunk], max_chars: int = 6000) -> BuiltCo
         used += extra + len(header) + len(body)
         seen_ids.add(c.chunk_id)
         seen_texts.add(key)
-        sources.append(Source(number, c.chunk_id, c.document_id, c.filename, c.page, c.chunk_index, r.score))
+        sources.append(Source(number, c.chunk_id, c.document_id, c.filename, c.page, c.chunk_index, r.score, body))
 
     return BuiltContext(SEPARATOR.join(blocks), sources, dropped)       # nối các block bằng \n\n

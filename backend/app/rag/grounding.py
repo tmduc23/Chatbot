@@ -79,7 +79,8 @@ def get_grounding_checker(settings: Settings | None = None) -> GroundingChecker 
     if not s.grounding_check:
         return None
     judge_settings = s.model_copy(update={
+        "llm_provider": s.grounding_provider or s.llm_provider,
         "llm_model": s.grounding_model or s.llm_model,
-        "llm_temperature":  0.0
+        "llm_temperature": 0.0,
     })
-    return GroundingChecker(get_llm(judge_settings))
+    return GroundingChecker(get_llm(judge_settings, role="grounding"))

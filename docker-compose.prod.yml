@@ -1,0 +1,121 @@
+# Phase 13: chạy production trên VPS. File ĐỘC LẬP với docker-compose.yml (dev), không gộp/ghi đè:
+#   - không mount source code (code nằm trong image, build 1 lần)
+#   - chỉ Caddy mở cổng ra Internet (80, 443); postgres/backend/frontend chỉ nói chuyện trong mạng Docker
+#   - mọi service tự bật lại khi lỗi hoặc khi VPS khởi động lại
+# Trên VPS, .env có dòng COMPOSE_FILE=docker-compose.prod.yml nên chỉ cần gõ `docker compose ...`
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"              # HTTP/3
+    environment:
+      DOMAIN: ${DOMAIN:?Đặt DOMAIN trong .env, vd. cv.example.com}
+      ACME_EMAIL: ${ACME_EMAIL:?Đặt ACME_EMAIL trong .env (email nhận thông báo chứng chỉ)}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data           # chứng chỉ HTTPS. Mất volume này = xin lại chứng chỉ (Let's Encrypt giới hạn số lần)
+      - caddy_config:/config
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+
+  postgres:
+    # CÙNG image Postgres 17 như máy dev (pgvector + pg_textsearch), build từ thư mục postgres/ của bạn
+    build: ./postgres
+    image: rag-postgres:17
+    command: ["postgres", "-c", "shared_preload_libraries=pg_textsearch"]   # thiếu dòng này -> migration 0006 bỏ qua index BM25
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Đặt POSTGRES_PASSWORD trong .env}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # KHÔNG có "ports": Postgres không bao giờ được mở ra Internet
+    volumes:
+      - pgdata17:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    image: ${BACKEND_IMAGE:-rag-backend:local}   # Phase 14: CI build sẵn image, VPS chỉ cần pull
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}     # trên VPS là .env; thử trên máy: ENV_FILE=.env.prodtest
+    environment:
+      APP_ENV: production
+    volumes:
+      - storage:/app/storage
+      - ./scripts:/app/scripts:ro  # scripts/ nằm ở gốc project (giống docker-compose.yml)
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    logging: &logging
+      driver: json-file
+      options:                     # log không được làm đầy ổ đĩa VPS: tối đa 5 file x 10 MB mỗi service
+        max-size: "10m"
+        max-file: "5"
+
+  worker:
+    image: ${BACKEND_IMAGE:-rag-backend:local}   # CÙNG image với backend
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}     # trên VPS là .env; thử trên máy: ENV_FILE=.env.prodtest
+    environment:
+      APP_ENV: production
+    command: python scripts/worker.py
+    volumes:
+      - storage:/app/storage
+      - ./scripts:/app/scripts:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    stop_grace_period: 2m
+    logging: *logging
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # cùng tên miền với trang web: trình duyệt gọi https://DOMAIN/api/... -> Caddy chuyển sang backend
+        NEXT_PUBLIC_API_URL: https://${DOMAIN}
+    image: ${FRONTEND_IMAGE:-rag-frontend:local}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging: *logging
+
+  # Không bắt buộc: docker compose --profile monitoring up -d. Xem qua SSH tunnel, không mở ra Internet
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: ["monitoring"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9090:9090"      # chỉ nghe trên chính VPS
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - ./monitoring/metrics_token:/etc/prometheus/metrics_token:ro
+      - promdata:/prometheus
+
+volumes:
+  pgdata17:
+  storage:
+  caddy_data:
+  caddy_config:
+  promdata:

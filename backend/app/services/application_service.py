@@ -16,11 +16,12 @@ class ApplicationService:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, application_id: str, name: str, description: str | None = None) -> Application:
+    def create(self, application_id: str, name: str, description: str | None = None,
+               is_public: bool = False) -> Application:
         if app_repo.get(self.db, application_id) is not None:
             raise ApplicationAlreadyExistsError(f"Application: '{application_id}' already exists")
         try:
-            app = app_repo.create(self.db, application_id, name, description)
+            app = app_repo.create(self.db, application_id, name, description, is_public=is_public)
             self.db.commit()
         except IntegrityError:
             # 2 request tạo cùng id gần như đồng thời: cả 2 qua bước kiểm tra trên,
@@ -33,6 +34,5 @@ class ApplicationService:
         return app_repo.list_all(self.db)
 
 
-    # require: gom việc lấy "application, không có thì báo lỗi"
     def get(self, application_id: str) -> Application:
         return app_repo.require(self.db, application_id)

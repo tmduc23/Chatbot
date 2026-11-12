@@ -1,0 +1,2037 @@
+[
+  {
+    "id": "sa001",
+    "source_id": "570d2417fed7b91900d45c3e",
+    "question": "Where according to gross state product does Victoria rank in Australia?",
+    "answerable": true,
+    "expected_texts": [
+      "Victoria's total gross state product (GSP) is ranked second in Australia, although Victoria is ranked fourth in terms of GSP per capita because of its limited mining activity."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "second"
+    ],
+    "reference_answers": [
+      "second"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa002",
+    "source_id": "571c91c8dd7acb1400e4c10a",
+    "question": "What is the most common form of oxygen on the planet?",
+    "answerable": true,
+    "expected_texts": [
+      "The common allotrope of elemental oxygen on Earth is called dioxygen, O\n2."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "dioxygen"
+    ],
+    "reference_answers": [
+      "dioxygen"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa003",
+    "source_id": "573776eec3c5551400e51eec",
+    "question": "Where will a canonball dropped from the crow's nest of a ship land according to Aristotle?",
+    "answerable": true,
+    "expected_texts": [
+      "Thus, in an Aristotelian universe, the falling cannonball would land behind the foot of the mast of a moving ship."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "behind the foot of the mast"
+    ],
+    "reference_answers": [
+      "behind the foot of the mast",
+      "straight down",
+      "behind the foot of the mast of a moving ship"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa004",
+    "source_id": "570d2556fed7b91900d45c47",
+    "question": "Where is the Asian influence strongest in Victoria?",
+    "answerable": true,
+    "expected_texts": [
+      "Many Chinese miners worked in Victoria, and their legacy is particularly strong in Bendigo and its environs."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "Bendigo"
+    ],
+    "reference_answers": [
+      "Bendigo"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa005",
+    "source_id": "572673f5708984140094c69d",
+    "question": "What type of gradients are formed by faulting and other deformational processes?",
+    "answerable": true,
+    "expected_texts": [
+      "Faulting and other deformational processes result in the creation of topographic gradients, causing material on the rock unit that is increasing in elevation to be eroded by hillslopes and channels."
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "topographic"
+    ],
+    "reference_answers": [
+      "topographic gradients",
+      "topographic"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa006",
+    "source_id": "571c879bdd7acb1400e4c0ec",
+    "question": "What is the term for the arrangement of two unpaired electrons in dioxygen?",
+    "answerable": true,
+    "expected_texts": [
+      "An electron configuration with two unpaired electrons as found in dioxygen (see the filled π* orbitals in the diagram), orbitals that are of equal energy—i.e., degenerate—is a configuration termed a spin triplet state."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "spin triplet state"
+    ],
+    "reference_answers": [
+      "spin triplet state",
+      "a spin triplet state"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa007",
+    "source_id": "57268527708984140094c8c2",
+    "question": "What was the main idea of James Hutton's paper?",
+    "answerable": true,
+    "expected_texts": [
+      "In his paper, he explained his theory that the Earth must be much older than had previously been supposed in order to allow enough time for mountains to be eroded and for sediments to"
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "Earth must be much older than had previously been supposed"
+    ],
+    "reference_answers": [
+      "Earth must be much older than had previously been supposed",
+      "the Earth must be much older than had previously been supposed"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa008",
+    "source_id": "5728284e3acd2414000df5d1",
+    "question": "What year did the the case go before the supreme court?",
+    "answerable": true,
+    "expected_texts": [
+      "An example would be WBAI's broadcasting the track \"Filthy Words\" from a George Carlin comedy album, which eventually led to the 1978 Supreme Court case of FCC v."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "1978"
+    ],
+    "reference_answers": [
+      "1978"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa009",
+    "source_id": "571c4132dd7acb1400e4c0b1",
+    "question": "What did Priestley name the gas his experiment produced?",
+    "answerable": true,
+    "expected_texts": [
+      "In the meantime, on August 1, 1774, an experiment conducted by the British clergyman Joseph Priestley focused sunlight on mercuric oxide (HgO) inside a glass tube, which liberated a gas he named \"dephlogisticated air\"."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "dephlogisticated air"
+    ],
+    "reference_answers": [
+      "dephlogisticated air",
+      "\"dephlogisticated air"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa010",
+    "source_id": "571a4d1a4faf5e1900b8a95b",
+    "question": "The symbol for mercuric oxide is?",
+    "answerable": true,
+    "expected_texts": [
+      "In the meantime, on August 1, 1774, an experiment conducted by the British clergyman Joseph Priestley focused sunlight on mercuric oxide (HgO) inside a glass tube, which liberated a gas he named \"dephlogisticated air\"."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "HgO"
+    ],
+    "reference_answers": [
+      "HgO"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa011",
+    "source_id": "571c8eb9dd7acb1400e4c0f7",
+    "question": "In what way did Lavoisier see that the tin he used in his experiment had increased?",
+    "answerable": true,
+    "expected_texts": [
+      "He also noted that the tin had increased in weight and that increase was the same as the weight of the air that rushed back in."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "weight"
+    ],
+    "reference_answers": [
+      "weight",
+      "that increase was the same as the weight of the air that rushed back in",
+      "the tin had increased in weight and that increase was the same as the weight of the air that rushed back in"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa012",
+    "source_id": "56e1a564cd28a01900c67a48",
+    "question": "Whose thesis states that the solution to a problem is solvable with reasonable resources assuming it allows for a polynomial time algorithm?",
+    "answerable": true,
+    "expected_texts": [
+      "Cobham's thesis says that a problem can be solved with a feasible amount of resources if it admits a polynomial time algorithm."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "Cobham"
+    ],
+    "reference_answers": [
+      "Cobham's thesis",
+      "Cobham's",
+      "Cobham"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa013",
+    "source_id": "56e1b00ce3433e140042309f",
+    "question": "What are two factors that directly effect how powerful a Turing machine may or may not be?",
+    "answerable": true,
+    "expected_texts": [
+      "They are all equally powerful in principle, but when resources (such as time or space) are bounded, some of these may be more powerful than others."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "time or space"
+    ],
+    "reference_answers": [
+      "time or space"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa014",
+    "source_id": "57266193dd62a815002e832d",
+    "question": "In the layered model of the Earth there are seismic discontinuities in which layer?",
+    "answerable": true,
+    "expected_texts": [
+      "advances led to the development of a layered model of the Earth, with a crust and lithosphere on top, the mantle below (separated within itself by seismic discontinuities at 410 and 660 kilometers), and the outer core"
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "mantle"
+    ],
+    "reference_answers": [
+      "the mantle",
+      "mantle"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa015",
+    "source_id": "573735e8c3c5551400e51e72",
+    "question": "What was the belief that maintaining motion required force?",
+    "answerable": true,
+    "expected_texts": [
+      "A fundamental error was the belief that a force is required to maintain motion, even at a constant velocity."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "fundamental error"
+    ],
+    "reference_answers": [
+      "fundamental error",
+      "A fundamental error"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa016",
+    "source_id": "571a4d1a4faf5e1900b8a958",
+    "question": "\"An Account of Further Discoveries in Air\" was published by who in 1775?",
+    "answerable": true,
+    "expected_texts": [
+      "In the meantime, on August 1, 1774, an experiment conducted by the British clergyman Joseph Priestley focused sunlight on mercuric oxide (HgO) inside a glass tube, which liberated a gas he named \"dephlogisticated air\"."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "Priestley"
+    ],
+    "reference_answers": [
+      "Joseph Priestley",
+      "Priestley"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa017",
+    "source_id": "57267947f1498d1400e8e0f0",
+    "question": "What type of microscope is used by petrologists?",
+    "answerable": true,
+    "expected_texts": [
+      "In an optical mineralogy analysis, thin sections of rock samples are analyzed through a petrographic microscope, where the minerals can be identified through their different properties in plane-polarized and"
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "petrographic"
+    ],
+    "reference_answers": [
+      "petrographic microscope",
+      "petrographic"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa018",
+    "source_id": "56e190bce3433e1400422fc8",
+    "question": "What kind of problems are one of the main topics studied in computational complexity theory?",
+    "answerable": true,
+    "expected_texts": [
+      "Decision problems are one of the central objects of study in computational complexity theory."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "Decision"
+    ],
+    "reference_answers": [
+      "Decision problems",
+      "Decision"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa019",
+    "source_id": "57378862c3c5551400e51f23",
+    "question": "When was the first measurement of the value of the Newton Universal Gravitation Constant?",
+    "answerable": true,
+    "expected_texts": [
+      "Not until 1798 was Henry Cavendish able to make the first measurement of  using a torsion balance; this was widely"
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "1798"
+    ],
+    "reference_answers": [
+      "1798"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa020",
+    "source_id": "57376828c3c5551400e51eb9",
+    "question": "How are forces classified with regard to push and pull strengt?",
+    "answerable": true,
+    "expected_texts": [
+      "Because of these characteristics, forces are classified as \"vector quantities\"."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "vector quantities"
+    ],
+    "reference_answers": [
+      "vector quantities",
+      "\"vector quantities\"",
+      "dependent upon how strong"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa021",
+    "source_id": "5737821cc3c5551400e51f19",
+    "question": "Who formed the universal theory of gravitation?",
+    "answerable": true,
+    "expected_texts": [
+      "For example, Isaac Newton unified the force responsible for objects falling at the surface of the Earth with the force responsible for the orbits of celestial mechanics in his universal theory of gravitation."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "Isaac Newton"
+    ],
+    "reference_answers": [
+      "Isaac Newton"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa022",
+    "source_id": "5728284e3acd2414000df5ce",
+    "question": "What did Joseph Haas say in his email?",
+    "answerable": true,
+    "expected_texts": [
+      "For example, Joseph Haas was arrested for allegedly sending an email to the Lebanon, New Hampshire city councilors stating, \"Wise up or die.\""
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "Wise up or die"
+    ],
+    "reference_answers": [
+      "\"Wise up or die.\"",
+      "Wise up or die"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa023",
+    "source_id": "56e1a564cd28a01900c67a4a",
+    "question": "What term corresponds to the maximum measurement of time across all functions of n?",
+    "answerable": true,
+    "expected_texts": [
+      "Since the time taken on different inputs of the same size can be different, the worst-case time complexity T(n) is defined to be the maximum time taken over all inputs of size n."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "worst-case time complexity"
+    ],
+    "reference_answers": [
+      "worst-case time complexity",
+      "the worst-case time complexity"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa024",
+    "source_id": "5728ebcb3acd2414000e01dc",
+    "question": "Which reason is given sometimes to plead not guilty involving these matters?",
+    "answerable": true,
+    "expected_texts": [
+      "I feel I did the right thing by violating this particular law; I am guilty as charged,\" but that pleading not guilty sends a message of, \"Guilt implies wrong-doing."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "Guilt implies wrong-doing"
+    ],
+    "reference_answers": [
+      "Guilt implies wrong-doing",
+      "guilty of doing no wrong",
+      "I may have violated some specific laws, but I am guilty of doing no wrong"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa025",
+    "source_id": "57268527708984140094c8c1",
+    "question": "James Hutton published a 2 volume version of his theories in what year?",
+    "answerable": true,
+    "expected_texts": [
+      "Hutton published a two-volume version of his ideas in 1795 (Vol."
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "1795"
+    ],
+    "reference_answers": [
+      "1795"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa026",
+    "source_id": "56e1c4fce3433e140042314e",
+    "question": "What are three examples of complexity classes associated with definitions established by probabilistic Turing machines?",
+    "answerable": true,
+    "expected_texts": [
+      "Other important complexity classes include BPP, ZPP and RP, which are defined using probabilistic Turing machines; AC and NC, which are defined using Boolean"
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "BPP, ZPP and RP"
+    ],
+    "reference_answers": [
+      "BPP, ZPP and RP"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa027",
+    "source_id": "570d418dfed7b91900d45dbd",
+    "question": "How many seats does Victoria have in the Australian House of Representatives?",
+    "answerable": true,
+    "expected_texts": [
+      "Politically, Victoria has 37 seats in the Australian House of Representatives and 12 seats in the Australian Senate."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "37"
+    ],
+    "reference_answers": [
+      "37"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa028",
+    "source_id": "571c3a685efbb31900334db3",
+    "question": "Of what group in the periodic table is oxygen a member?",
+    "answerable": true,
+    "expected_texts": [
+      "It is a member of the chalcogen group on the periodic table and is a highly reactive nonmetal and oxidizing agent that readily forms compounds (notably oxides) with most elements."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "chalcogen"
+    ],
+    "reference_answers": [
+      "chalcogen",
+      "the chalcogen group"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa029",
+    "source_id": "570d29c2b3d812140066d4c1",
+    "question": "How many Victorians are non-religious?",
+    "answerable": true,
+    "expected_texts": [
+      "Around 20% of Victorians claim no religion."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "20%"
+    ],
+    "reference_answers": [
+      "20%"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa030",
+    "source_id": "570d4030fed7b91900d45da1",
+    "question": "What entity owns V/Line?",
+    "answerable": true,
+    "expected_texts": [
+      "electrified, passenger system throughout Melbourne and suburbs; V/Line which is now owned by the Victorian Government, operates a concentrated service to major regional centres, as well as long distance services on"
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "Victorian Government"
+    ],
+    "reference_answers": [
+      "Victorian Government",
+      "the Victorian Government"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa031",
+    "source_id": "571cc8815efbb31900334dee",
+    "question": "Where on Earth is free oxygen found?",
+    "answerable": true,
+    "expected_texts": [
+      "Free oxygen also occurs in solution in the world's water bodies."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "water"
+    ],
+    "reference_answers": [
+      "water",
+      "in solution in the world's water bodies",
+      "the world's water bodies"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa032",
+    "source_id": "5737804dc3c5551400e51f10",
+    "question": "What nuclear forces only act at short distances?",
+    "answerable": true,
+    "expected_texts": [
+      "The strong and weak forces are nuclear forces that act only at very short distances, and are responsible for the interactions between subatomic particles, including nucleons and compound nuclei."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "strong and weak"
+    ],
+    "reference_answers": [
+      "strong and weak",
+      "strong and weak forces"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa033",
+    "source_id": "5728d7c54b864d1900164f4e",
+    "question": "What issue plagues the literature about civil disobedience?",
+    "answerable": true,
+    "expected_texts": [
+      "In reviewing the voluminous literature on the subject, the student of civil disobedience rapidly finds himself surrounded by a maze of semantical problems and grammatical niceties."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "semantical problems and grammatical niceties"
+    ],
+    "reference_answers": [
+      "semantical problems and grammatical niceties",
+      "maze of semantical problems and grammatical niceties"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa034",
+    "source_id": "571cc6f85efbb31900334de5",
+    "question": "What is the clarity of liquid oxygen?",
+    "answerable": true,
+    "expected_texts": [
+      "Both liquid and solid O\n2 are clear substances with a light sky-blue color caused by absorption in the red (in contrast with the blue color of the sky, which is due to Rayleigh scattering of blue light)."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "clear"
+    ],
+    "reference_answers": [
+      "clear",
+      "clear substances with a light sky-blue color"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa035",
+    "source_id": "56e1a38de3433e140042305e",
+    "question": "How is the time needed to obtain the solution to a problem calculated?",
+    "answerable": true,
+    "expected_texts": [
+      "Thus the time required to solve a problem (or the space required, or any measure of complexity) is calculated as a function of the size of the instance."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "a function of the size of the instance"
+    ],
+    "reference_answers": [
+      "as a function of the size of the instance",
+      "a function of the size of the instance"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa036",
+    "source_id": "570d2af0fed7b91900d45c96",
+    "question": "What city is the capital of Victoria?",
+    "answerable": true,
+    "expected_texts": [
+      "Most of its population is concentrated in the area surrounding Port Phillip Bay, which includes the metropolitan area of its capital and largest city, Melbourne, which is Australia's second-largest city."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "Melbourne"
+    ],
+    "reference_answers": [
+      "Melbourne"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa037",
+    "source_id": "572807802ca10214002d9bfb",
+    "question": "Le grand states that students studying civil disobedience will often run into grammatical niceties and what other problem?",
+    "answerable": true,
+    "expected_texts": [
+      "In reviewing the voluminous literature on the subject, the student of civil disobedience rapidly finds himself surrounded by a maze of semantical problems and grammatical niceties."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "semantical"
+    ],
+    "reference_answers": [
+      "semantical",
+      "a maze of semantical problems",
+      "semantical problems"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa038",
+    "source_id": "571c8eb9dd7acb1400e4c0f6",
+    "question": "What did Lavoisier conclude was consumed by combustion in his experiments?",
+    "answerable": true,
+    "expected_texts": [
+      "He noted that air rushed in when he opened the container, which indicated that part of the trapped air had been consumed."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "air"
+    ],
+    "reference_answers": [
+      "air",
+      "part of the trapped air"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa039",
+    "source_id": "57281c594b864d19001644a2",
+    "question": "Cristian Bay's encyclopedia concludes that civil disobedience does not only include what behavior?",
+    "answerable": true,
+    "expected_texts": [
+      "Black's Law Dictionary includes non-violence in its definition of civil disobedience."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "non-violence"
+    ],
+    "reference_answers": [
+      "non-violence",
+      "non-violent"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa040",
+    "source_id": "571c9074dd7acb1400e4c100",
+    "question": "What is the name for O3 most often used?",
+    "answerable": true,
+    "expected_texts": [
+      "Trioxygen (O\n3) is usually known as ozone and is a very reactive allotrope of oxygen that is damaging to lung tissue."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "ozone"
+    ],
+    "reference_answers": [
+      "ozone",
+      "Trioxygen",
+      "Ozone"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa041",
+    "source_id": "5728dafe3acd2414000e005e",
+    "question": "Who is to blame for acting unjustly?",
+    "answerable": true,
+    "expected_texts": [
+      "More than this, since only individuals act, only individuals can act unjustly."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "individuals"
+    ],
+    "reference_answers": [
+      "individuals",
+      "an individual"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa042",
+    "source_id": "570d50a5fed7b91900d45e7d",
+    "question": "How much did the gross agricultural product increase from 2003-04?",
+    "answerable": true,
+    "expected_texts": [
+      "During 2003–04, the gross value of Victorian agricultural production increased by 17% to $8.7 billion."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "$8.7 billion"
+    ],
+    "reference_answers": [
+      "$8.7 billion",
+      "24%"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa043",
+    "source_id": "57280f974b864d1900164371",
+    "question": "Constitutional impasse is different from civil disobedience because does not include what type of person?",
+    "answerable": true,
+    "expected_texts": [
+      "Civil disobedience is usually defined as pertaining to a citizen's relation to the state and its laws, as distinguished from a constitutional impasse in which two public"
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "citizen's"
+    ],
+    "reference_answers": [
+      "citizen's",
+      "head of government",
+      "private citizen",
+      "private"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa044",
+    "source_id": "573735e8c3c5551400e51e74",
+    "question": "How long did it take to improve on Sir Isaac Newton's laws of motion?",
+    "answerable": true,
+    "expected_texts": [
+      "With his mathematical insight, Sir Isaac Newton formulated laws of motion that were not improved-on for nearly three hundred years."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "three hundred years"
+    ],
+    "reference_answers": [
+      "nearly three hundred years",
+      "three hundred years"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa045",
+    "source_id": "56e1bd4acd28a01900c67afd",
+    "question": "What does a big O notation hide?",
+    "answerable": true,
+    "expected_texts": [
+      "Upper and lower bounds are usually stated using the big O notation, which hides constant factors and smaller terms."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "constant factors and smaller terms"
+    ],
+    "reference_answers": [
+      "constant factors and smaller terms"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa046",
+    "source_id": "570d4030fed7b91900d45da2",
+    "question": "What type of rail line is Pacific National?",
+    "answerable": true,
+    "expected_texts": [
+      "as well as long distance services on other lines; Pacific National, CFCL Australia which operate freight services; Great Southern Rail which operates The Overland Melbourne—Adelaide; and NSW TrainLink which operates"
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "freight"
+    ],
+    "reference_answers": [
+      "freight services",
+      "freight"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa047",
+    "source_id": "571c7abfdd7acb1400e4c0be",
+    "question": "Of what did da Vinci think a part  was consumed during combustion?",
+    "answerable": true,
+    "expected_texts": [
+      "Many centuries later Leonardo da Vinci built on Philo's work by observing that a portion of air is consumed during combustion and respiration."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "air"
+    ],
+    "reference_answers": [
+      "air"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa048",
+    "source_id": "57378c9b1c456719005744aa",
+    "question": "Whatare the electrostatic and magnetic force awritten as the sum of?",
+    "answerable": true,
+    "expected_texts": [
+      "This force can be written as a sum of the electrostatic force (due to the electric field) and the magnetic force (due to the magnetic field)."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "electrostatic force"
+    ],
+    "reference_answers": [
+      "electrostatic force",
+      "the electrostatic force (due to the electric field) and the magnetic force (due to the magnetic field).",
+      "electrostatic force (due to the electric field) and the magnetic force",
+      "the electrostatic force (due to the electric field) and the magnetic force"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa049",
+    "source_id": "5728eef92ca10214002daab0",
+    "question": "What type of punishment is sometimes offered to civil disobedients?",
+    "answerable": true,
+    "expected_texts": [
+      "Sometimes the prosecution proposes a plea bargain to civil disobedients, as in the case of the Camden 28, in which the defendants were offered an"
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "plea bargain"
+    ],
+    "reference_answers": [
+      "plea bargain",
+      "plead guilty to one misdemeanor count and receive no jail time"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa050",
+    "source_id": "5726701add62a815002e84cb",
+    "question": "When rock folds deep in the Earth it can fold one of two ways, when it buckles downwards it creates what?",
+    "answerable": true,
+    "expected_texts": [
+      "These folds can either be those where the material in the center of the fold buckles upwards, creating \"antiforms\", or where it buckles downwards, creating \"synforms\"."
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "synforms"
+    ],
+    "reference_answers": [
+      "synforms"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa051",
+    "source_id": "571caac55efbb31900334dca",
+    "question": "On what date was oxygen liquefied in a stable form?",
+    "answerable": true,
+    "expected_texts": [
+      "Oxygen was liquified in stable state for the first time on March 29, 1883 by Polish scientists from Jagiellonian University, Zygmunt Wróblewski and Karol Olszewski."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "March 29, 1883"
+    ],
+    "reference_answers": [
+      "March 29, 1883"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa052",
+    "source_id": "5728dddc2ca10214002da9d5",
+    "question": "What dilemma is a good example of moral civil disobedience?",
+    "answerable": true,
+    "expected_texts": [
+      "Informed Jury Association's publication \"A Primer for Prospective Jurors\" notes, \"Think of the dilemma faced by German citizens when Hitler's secret police demanded to know if they were hiding a Jew in their house.\" By"
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "the dilemma faced by German citizens"
+    ],
+    "reference_answers": [
+      "the dilemma faced by German citizens",
+      "German citizens when Hitler's secret police demanded to know if they were hiding a Jew in their house",
+      "the dilemma faced by German citizens when Hitler's secret police demanded to know if they were hiding a Jew in their house"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa053",
+    "source_id": "571c83f3dd7acb1400e4c0d9",
+    "question": "What is the bond order of dioxygen molecules?",
+    "answerable": true,
+    "expected_texts": [
+      "from the atomic orbitals of the individual oxygen atoms, the filling of which results in a bond order of two."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "two"
+    ],
+    "reference_answers": [
+      "two"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa054",
+    "source_id": "57267640f1498d1400e8e078",
+    "question": "Where is the oldest known rock in the world located?",
+    "answerable": true,
+    "expected_texts": [
+      "Even older rocks, such as the Acasta gneiss of the Slave craton in northwestern Canada, the oldest known rock in the world have been metamorphosed to the point where their origin"
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "Canada"
+    ],
+    "reference_answers": [
+      "Slave craton in northwestern Canada",
+      "Canada",
+      "northwestern Canada"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa055",
+    "source_id": "56e1c9bfe3433e1400423195",
+    "question": "What are two examples of different types of reduction?",
+    "answerable": true,
+    "expected_texts": [
+      "different types of reductions, based on the method of reduction, such as Cook reductions, Karp reductions and Levin reductions, and the bound on the complexity of reductions, such as polynomial-time reductions or"
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "Cook reductions, Karp reductions"
+    ],
+    "reference_answers": [
+      "Karp reductions and Levin reductions",
+      "Cook reductions, Karp reductions"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa056",
+    "source_id": "570d47b8b3d812140066d62e",
+    "question": "To what gauge have some lines been changed in the west of Victoria?",
+    "answerable": true,
+    "expected_texts": [
+      "However, the interstate trunk routes, as well as a number of branch lines in the west of the state have been converted to 1,435 mm (4 ft 8 1⁄2 in) standard gauge."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "1,435 mm"
+    ],
+    "reference_answers": [
+      "1,435 mm",
+      "1,435 mm (4 ft 8 1⁄2 in) standard gauge"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa057",
+    "source_id": "5737477bc3c5551400e51ea6",
+    "question": "What applies to equally to constant velocity motion as it does to rest.",
+    "answerable": true,
+    "expected_texts": [
+      "Inertia therefore applies equally well to constant velocity motion as it does to rest."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "Inertia"
+    ],
+    "reference_answers": [
+      "Inertia"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa058",
+    "source_id": "57373f80c3c5551400e51e92",
+    "question": "Who experimented by rolling stones and canonballs down a steep incline?",
+    "answerable": true,
+    "expected_texts": [
+      "Galileo constructed an experiment in which stones and cannonballs were both rolled down an incline to disprove the Aristotelian theory of motion early in the 17th century."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "Galileo"
+    ],
+    "reference_answers": [
+      "Galileo",
+      "Galileo Galilei"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa059",
+    "source_id": "5728dafe3acd2414000e0061",
+    "question": "What did Thoreau claim about the majority?",
+    "answerable": true,
+    "expected_texts": [
+      "The majority may be powerful but it is not necessarily right."
+    ],
+    "expected_documents": [
+      "03-civil-disobedience.txt"
+    ],
+    "answer_contains": [
+      "not necessarily right"
+    ],
+    "reference_answers": [
+      "not necessarily right",
+      "may be powerful but it is not necessarily right",
+      "The majority may be powerful but it is not necessarily right"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience"
+    ]
+  },
+  {
+    "id": "sa060",
+    "source_id": "57268066708984140094c825",
+    "question": "Stratigraphers try to locate areas for what types of extraction?",
+    "answerable": true,
+    "expected_texts": [
+      "Stratigraphers can then use these data to reconstruct ancient processes occurring on the surface of the Earth, interpret past environments, and locate areas for water, coal, and hydrocarbon extraction."
+    ],
+    "expected_documents": [
+      "04-geology.txt"
+    ],
+    "answer_contains": [
+      "hydrocarbon"
+    ],
+    "reference_answers": [
+      "water, coal, and hydrocarbon extraction",
+      "hydrocarbon"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "geology"
+    ]
+  },
+  {
+    "id": "sa061",
+    "source_id": "56e17e6ee3433e1400422f80",
+    "question": "What is one example of an instance that the quantitative answer to the traveling salesman problem fails to answer?",
+    "answerable": true,
+    "expected_texts": [
+      "The quantitative answer to this particular problem instance is of little use for solving other instances of the problem, such as asking for a round trip through all sites in Milan whose total length is at most 10 km."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "round trip through all sites in Milan"
+    ],
+    "reference_answers": [
+      "round trip through all sites in Milan",
+      "asking for a round trip through all sites in Milan whose total length is at most 10 km",
+      "a round trip through all sites in Milan whose total length is at most 10 km"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa062",
+    "source_id": "5737821cc3c5551400e51f1c",
+    "question": "What type of physics model did Einstein fail to make?",
+    "answerable": true,
+    "expected_texts": [
+      "Physicists are still attempting to develop self-consistent unification models that would combine all four fundamental interactions into a theory of everything."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "self-consistent unification"
+    ],
+    "reference_answers": [
+      "self-consistent unification",
+      "self-consistent unification models",
+      "self-consistent unification models that would combine all four fundamental interactions"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa063",
+    "source_id": "571c7d55dd7acb1400e4c0c6",
+    "question": "What was Dalton's erroneous formula for water?",
+    "answerable": true,
+    "expected_texts": [
+      "For example, Dalton assumed that water's formula was HO, giving the atomic mass of oxygen as 8 times that of hydrogen, instead of the modern value of about 16."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "HO"
+    ],
+    "reference_answers": [
+      "HO"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa064",
+    "source_id": "571a50df4faf5e1900b8a961",
+    "question": "Combustion is caused by an oxidant and a fuel. What role does oxygen play in combustion?",
+    "answerable": true,
+    "expected_texts": [
+      "Oxygen is the oxidant, not the fuel, but nevertheless the source of most of the chemical energy released in combustion."
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "oxidant"
+    ],
+    "reference_answers": [
+      "Oxygen is the oxidant",
+      "the oxidant",
+      "oxidant"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa065",
+    "source_id": "57376c50c3c5551400e51ecf",
+    "question": "What do you get when you figure the sum of forces with vector addition?",
+    "answerable": true,
+    "expected_texts": [
+      "Summing these component forces using vector addition yields the original force."
+    ],
+    "expected_documents": [
+      "05-force.txt"
+    ],
+    "answer_contains": [
+      "the original force"
+    ],
+    "reference_answers": [
+      "the original force"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "force"
+    ]
+  },
+  {
+    "id": "sa066",
+    "source_id": "56e1aff7cd28a01900c67a69",
+    "question": "What fixed set of factors determine the actions of a deterministic Turing machine",
+    "answerable": true,
+    "expected_texts": [
+      "A deterministic Turing machine is the most basic Turing machine, which uses a fixed set of rules to determine its future actions."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "rules"
+    ],
+    "reference_answers": [
+      "rules",
+      "a fixed set of rules to determine its future actions"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa067",
+    "source_id": "570d2d68fed7b91900d45cbe",
+    "question": "How much does Victoria produce in Australian pears?",
+    "answerable": true,
+    "expected_texts": [
+      "Victorian farms produce nearly 90% of Australian pears and third of apples."
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "90%"
+    ],
+    "reference_answers": [
+      "90%"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "sa068",
+    "source_id": "56e1c7e2cd28a01900c67b76",
+    "question": "Within what variable is L constrained according to the space hierarchy theorem?",
+    "answerable": true,
+    "expected_texts": [
+      "For instance, the time hierarchy theorem tells us that P is strictly contained in EXPTIME, and the space hierarchy theorem tells us that L is strictly contained in PSPACE."
+    ],
+    "expected_documents": [
+      "02-computational-complexity-theory.txt"
+    ],
+    "answer_contains": [
+      "PSPACE"
+    ],
+    "reference_answers": [
+      "PSPACE"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory"
+    ]
+  },
+  {
+    "id": "sa069",
+    "source_id": "571c83f3dd7acb1400e4c0da",
+    "question": "What is a descriptive term for a low-to-high energy bond?",
+    "answerable": true,
+    "expected_texts": [
+      "More specifically, the double bond is the result of sequential, low-to-high energy, or Aufbau, filling of orbitals, and the resulting cancellation of contributions from the 2s electrons, after"
+    ],
+    "expected_documents": [
+      "01-oxygen.txt"
+    ],
+    "answer_contains": [
+      "Aufbau"
+    ],
+    "reference_answers": [
+      "Aufbau"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "oxygen"
+    ]
+  },
+  {
+    "id": "sa070",
+    "source_id": "570d529fb3d812140066d6be",
+    "question": "Where do other tourist events happen in Victoria outside of Melbourne?",
+    "answerable": true,
+    "expected_texts": [
+      "Most of these events are centred on Melbourne, but others occur in regional cities, such as the V8 Supercars and Australian Motorcycle Grand Prix at Phillip Island, the Grand Annual"
+    ],
+    "expected_documents": [
+      "06-victoria-australia.txt"
+    ],
+    "answer_contains": [
+      "Phillip Island"
+    ],
+    "reference_answers": [
+      "regional cities",
+      "in regional cities",
+      "Phillip Island"
+    ],
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia"
+    ]
+  },
+  {
+    "id": "su001",
+    "source_id": "5ad55fe75b96ef001a10ad0d",
+    "question": "What are three examples of measurement that are bound within algorithms to establish complexity classes?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su002",
+    "source_id": "5ad258b4d7d075001a428ddc",
+    "question": "What are products of oxygen use in organisms?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "oxygen",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su003",
+    "source_id": "5a66a55af038b7001ab0c080",
+    "question": "On what grounds is a law judged to be moral?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su004",
+    "source_id": "5a6647d2c2b11c001a425f21",
+    "question": "What novel was written by LeGrande?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su005",
+    "source_id": "5a58feb63e1742001a15cf30",
+    "question": "Why is the theory of evolution so complex?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "geology",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su006",
+    "source_id": "5ad26103d7d075001a428fed",
+    "question": "Who was influenced by early Medieval ideas?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su007",
+    "source_id": "5a6398fd7f3c80001a150af3",
+    "question": "How many narrow gauge rail lines were built before 1900?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "victoria-australia",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su008",
+    "source_id": "5a66978af038b7001ab0c02b",
+    "question": "What plea was entered in the case the US v. Dougherty?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su009",
+    "source_id": "5ad53f815b96ef001a10abe5",
+    "question": "What is the expression set called where three integers are multiplied?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su010",
+    "source_id": "5a669ee5f038b7001ab0c06c",
+    "question": "Why should winning your case be avoided by the public?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su011",
+    "source_id": "5a668ef8f038b7001ab0bfdf",
+    "question": "How did the Camden 28 decide to submit themselves to the court after pleading guilty?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su012",
+    "source_id": "5ad54d625b96ef001a10ac64",
+    "question": "What does not solve the problem of sorting a list of integers that is given as the input?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su013",
+    "source_id": "5ad26925d7d075001a4292c6",
+    "question": "The magnitude of the resultant varies from the similarities of what?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su014",
+    "source_id": "5a664447c2b11c001a425eee",
+    "question": "What theme does Ghandi begin The Mask of Anarchy with?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su015",
+    "source_id": "5ad278c3d7d075001a42957e",
+    "question": "What are considered less accurately to be \"fundamental interactions\"?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su016",
+    "source_id": "5ad26aedd7d075001a429335",
+    "question": "All quantitative force laws were discovered using what?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su017",
+    "source_id": "5ad262f7d7d075001a4290d6",
+    "question": "Who explained that reference frames subject to constant deceleration?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su018",
+    "source_id": "5ad24ff3d7d075001a428ca4",
+    "question": "What is the most abundant mass element in the Earth's biosphere?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "oxygen",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su019",
+    "source_id": "5a592e733e1742001a15cff6",
+    "question": "Who published William Smith's geological map?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "geology",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su020",
+    "source_id": "5ad542db5b96ef001a10abf6",
+    "question": "What term corresponds to the minimum measurement of the time across all functions of n?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su021",
+    "source_id": "5a5918ff3e1742001a15cf82",
+    "question": "What lens is used to identify chemical composition?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "geology",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su022",
+    "source_id": "5ad28035d7d075001a4297a8",
+    "question": "The curved line path in space-time is seen as a what line in space?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su023",
+    "source_id": "5ad561c85b96ef001a10ad40",
+    "question": "What kind of statement is not made in an effort of establishing the time and space requirements needed to enhance the ultimate number of problems solved?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su024",
+    "source_id": "5ad53f815b96ef001a10abe6",
+    "question": "What corresponds to solving the problem of multiplying three numbers/",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "computational-complexity-theory",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su025",
+    "source_id": "5a59002d3e1742001a15cf39",
+    "question": "When did geologists beginning comparing fossils to each other?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "geology",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su026",
+    "source_id": "5a66a55af038b7001ab0c07f",
+    "question": "What is the most important thing when deciding if a law is moral?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su027",
+    "source_id": "5a664612c2b11c001a425f0a",
+    "question": "What had happened to Vice President Agnew's status in modern times?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "civil-disobedience",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su028",
+    "source_id": "5ad261a4d7d075001a42904a",
+    "question": "Whose law made rest physically indistinguishable from zero constant velocity?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su029",
+    "source_id": "5ad27697d7d075001a429518",
+    "question": "What equilibrium occurs in fluctuating velocity motion?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "force",
+      "unanswerable"
+    ]
+  },
+  {
+    "id": "su030",
+    "source_id": "5a5812f9770dc0001aeeffd4",
+    "question": "What are some of the most well known experiments in patterns of faulting?",
+    "answerable": false,
+    "tags": [
+      "en",
+      "squad",
+      "geology",
+      "unanswerable"
+    ]
+  }
+]

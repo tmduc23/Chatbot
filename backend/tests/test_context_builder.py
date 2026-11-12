@@ -74,6 +74,19 @@ def test_empty_input() -> None:
 def test_source_to_dict_has_api_fields() -> None:
     built = build_context([_r("cv.pdf", "Docker", page=2)])
     data = built.sources[0].to_dict()
-    assert set(data) == {"number", "document_id", "filename", "page", "chunk_id"}
-    assert data["number"] == 1 and data["page"] == 2
+    assert set(data) == {"number", "document_id", "filename", "page", "chunk_id", "text"}   # Phase 10b: + text
+    assert data["number"] == 1 and data["page"] == 2 and data["text"] == "Docker"
     assert isinstance(data["document_id"], str) and isinstance(data["chunk_id"], str)   # UUID -> str cho JSON
+
+# --- Phase 10b: đoạn trích cho frontend ---
+
+def test_source_text_is_exactly_what_the_llm_read() -> None:
+    ctx = build_context([_r("cv.pdf", "  Đức dùng Docker để chạy Postgres.  \n", page=1)])
+    assert ctx.sources[0].text == "Đức dùng Docker để chạy Postgres."   # đã strip, giống hệt trong context
+    assert ctx.sources[0].text in ctx.text
+
+
+def test_truncated_first_chunk_keeps_truncated_text() -> None:
+    ctx = build_context([_r("a", "x" * 5000)], max_chars=300)
+    text = ctx.sources[0].text
+    assert 0 < len(text) < 5000 and text in ctx.text   # không đưa cho người đọc nhiều hơn LLM đã thấy

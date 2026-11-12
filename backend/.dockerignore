@@ -1,0 +1,9 @@
+# Phase 13: những thứ KHÔNG được chép vào image (COPY . .)
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# file người dùng upload: thuộc về volume, không thuộc về image
+storage/
+eval/results/
+.env

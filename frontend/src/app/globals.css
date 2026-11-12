@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/*
+  Màu theo "token" (tên theo vai trò, không theo màu): bg-surface, text-muted, border-line, bg-brand...
+  Giá trị thật nằm ở biến CSS bên dưới -> đổi sáng/tối hay màu chủ đạo chỉ là đổi biến,
+  không phải sửa class ở từng component.
+  - <html data-theme="light|dark">  : chế độ sáng / tối
+  - <html data-accent="blue|...">   : màu chủ đạo
+*/
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-warn: var(--warn-text);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-danger: var(--danger-text);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-line: var(--danger-line);
+  --color-ok: var(--ok-text);
+  --color-ok-bg: var(--ok-bg);
+  --color-ok-line: var(--ok-line);
+  --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+/* ---- Sáng (mặc định) ---- */
+:root {
+  color-scheme: light;
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --text: #14213d;
+  --muted: #5b6475;
+  --line: #e1e5ec;
+  --brand-fg: #ffffff;
+  --warn-text: #8a5300; --warn-bg: #fff7e8; --warn-line: #f1c66f;
+  --danger-text: #9b1c1c; --danger-bg: #fdeeee; --danger-line: #f2b8b8;
+  --ok-text: #166534; --ok-bg: #eaf8ef; --ok-line: #a8dfbd;
+  --brand: #2563eb;
+}
+[data-accent="teal"]   { --brand: #0f766e; }
+[data-accent="violet"] { --brand: #6d28d9; }
+[data-accent="rose"]   { --brand: #be123c; }
+[data-accent="amber"]  { --brand: #b45309; }
+
+/* ---- Tối ---- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1120;
+  --surface: #131b2e;
+  --surface-2: #1b2540;
+  --text: #e6eaf3;
+  --muted: #9ba5ba;
+  --line: #27324d;
+  --brand-fg: #0b1120;  /* màu chủ đạo ở chế độ tối là màu sáng -> chữ trên nút phải tối */
+  --warn-text: #f6c86b; --warn-bg: #2a2111; --warn-line: #6b5320;
+  --danger-text: #fca5a5; --danger-bg: #2c1517; --danger-line: #6e2b30;
+  --ok-text: #86efac; --ok-bg: #0f261a; --ok-line: #2b5e40;
+  --brand: #60a5fa;
+}
+[data-theme="dark"][data-accent="teal"]   { --brand: #2dd4bf; }
+[data-theme="dark"][data-accent="violet"] { --brand: #a78bfa; }
+[data-theme="dark"][data-accent="rose"]   { --brand: #fb7185; }
+[data-theme="dark"][data-accent="amber"]  { --brand: #fbbf24; }
+
+/* Nền nhạt của màu chủ đạo (chip nguồn, mục đang chọn): pha màu chủ đạo với màu nền thẻ */
+:root { --brand-soft: color-mix(in oklab, var(--brand) 14%, var(--surface)); }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Đổi theme: màu chuyển mượt thay vì "nháy" */
+body, header, aside, main, form, .theme-fade {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

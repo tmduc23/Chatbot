@@ -54,10 +54,14 @@ from app.rag.retrieval.base import RetrievedChunk
 
 
 def reciprocal_rank_fusion(
-    ranked_lists: dict[str, list[RetrievedChunk]], k: int = 60
+    ranked_lists: dict[str, list[RetrievedChunk]], k: int = 60,  weights: dict[str, float] | None = None,
 ) -> list[RetrievedChunk]:
     if k <= 0:
         raise ValueError("RRF k must be > 0")
+
+    weights = weights or {}
+    if any(w < 0 for w in weights.values()):
+        raise ValueError("RRF weights must be >= 0")
 
     scores: dict[uuid.UUID, float] = {}
     first_seen: dict[uuid.UUID, RetrievedChunk] = {}
@@ -67,7 +71,7 @@ def reciprocal_rank_fusion(
     for source, results in ranked_lists.items():
         for rank, chunk in enumerate(results, start=1):
             cid = chunk.chunk_id
-            scores[cid] = scores.get(cid, 0.0) + 1.0 / (k + rank)           # nếu có thì lấy điểm hiện tại, nếu chưa có thì lấy 0.0
+            scores[cid] = scores.get(cid, 0.0) + weights.get(source, 1.0) / (k + rank)           # nếu có thì lấy điểm hiện tại, nếu chưa có thì lấy 0.0
             first_seen.setdefault(cid, chunk)                               # setdefault do 1 chunk xuất hiện ở nhiều retriver, lưu object chunk
             ranks.setdefault(cid, {})[source] = rank                        # lưu rank của 2 retriver
 

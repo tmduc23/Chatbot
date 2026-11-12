@@ -26,6 +26,7 @@ import uuid
 from pathlib import Path
 from typing import BinaryIO         
 import time
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
@@ -91,6 +92,46 @@ class DocumentService:
 
 
     def ingest_file(self, application_id: str, source_path: Path, filename: str | None = None) -> Document:
+        """
+        NẠP NGAY (đồng bộ): kiểm tra + lưu file, rồi parse/chunk/embed luôn trong lời gọi này.
+        Dùng cho scripts/ingest.py, test, và API khi BACKGROUND_INGESTION=false.
+        """
+        doc = self._register(application_id, source_path, filename, DocumentStatus.PROCESSING)
+        logger.info("Ingesting document_id=%s filename=%s app=%s", doc.id, doc.filename, application_id)
+        try:
+            n_chunks = self.process_document(doc)
+            doc.status = DocumentStatus.READY
+            self.db.commit()
+            logger.info("Document %s READY with %d chunks", doc.id, n_chunks)
+            return doc
+        except Exception as exc:
+            self.db.rollback()
+            failed = self.db.get(Document, doc.id)
+            if failed is not None:
+                failed.status = DocumentStatus.FAILED
+                failed.error_message = str(exc)[:1000]
+                self.db.commit()
+            logger.exception("Document %s FAILED", doc.id)      # logger.exception cho biết xem lỗi ở đâu
+            raise
+
+    def submit_file(
+        self, application_id: str, source_path: Path, filename: str | None = None,
+        available_at: datetime | None = None,
+    ) -> Document:
+        """Phase 12a: chỉ kiểm tra + lưu file + tạo document PENDING (vài trăm ms), KHÔNG parse/embed.
+        Worker (app/workers/document_worker.py) xử lý sau, available_at: lịch xử lý (None = ngay)"""
+        doc = self._register(application_id, source_path, filename, DocumentStatus.PENDING, available_at)
+        logger.info("Queeued document_id=%s filename=%s app=%s", doc.id, doc.filename, application_id)
+
+        return doc
+
+    def _register(
+        self, application_id: str, source_path: Path, filename: str | None,
+        status: DocumentStatus, available_at: datetime | None = None,
+    ) -> Document:
+        """
+        Bước 1-5 (chung cho nạp ngay và nạp nền): validate, hash, chống trùng, lưu file, tạo document.
+        """
         filename = filename or source_path.name
 
         # 1. Application phải tồn tại
@@ -100,90 +141,80 @@ class DocumentService:
         # 2. Validate định dạng + dung lượng
         file_type = source_path.suffix.lower().lstrip(".")
         if file_type not in SUPPORTED_FILE_TYPES:
-            raise UnsupportedFileTypeError(f"'{filename}': unsupported type '.{file_type}'")
+            raise UnsupportedFileTypeError(f"'{filename}': upsupported type '.{file_type}'")
         size_mb = source_path.stat().st_size / (1024 * 1024)
         if size_mb > self.settings.max_upload_mb:
             raise FileTooLargeError(f"'{filename}' is {size_mb:.1f}MB (max {self.settings.max_upload_mb}MB)")
-        
-
 
         # 3. Hash + kiểm tra trùng (trong cùng application)
+        #    PENDING/PROCESSING cũng tính là trùng: file đó đang nằm trong hàng đợi
         file_hash = sha256_of_file(source_path)
         existing = doc_repo.get_by_hash(self.db, application_id, file_hash)
         if existing is not None:
             if existing.status != DocumentStatus.FAILED:
-                raise DuplicateDocumentError(f"'{filename}' already exists (document {existing.id})")       # dừng ngay chứ không chạy câu lệnh sau raise
-            self.db.delete(existing)        # cho phép lạp lại file
+                raise DuplicateDocumentError(f"'{filename}' already exists (document {existing.id})")
+            self.db.delete(existing)        # lần trước lỗi -> cho phép nạp lại
             self.db.flush()
 
-        # 4. Lưu file gốc: storge/<application_id>/<hash>/<ext>
+        # 4. Lưu file gốc: storage/<application_id>/<hash>.<ext>
         # Đặt theo hash -> không bao giờ đè nhầm 2 file trùng tên khác nội dung
         dest = self.storage_dir / application_id / f"{file_hash}.{file_type}"
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source_path, dest)
 
-        # 5. Tạo bản ghi document ở trạng thái PROCESSING và commit ngay,
-        # để nếu bước sau lỗi thì vẫn còn dấu vết trong DB
+        # 5. Tạo bản ghi document và commit ngay, để nếu bước sau lỗi thì vẫn còn dấu vết trong DB
         doc = doc_repo.create(
             self.db, application_id=application_id, filename=filename, file_type=file_type,
-            storage_path=str(dest), file_hash=file_hash, status=DocumentStatus.PROCESSING
+            storage_path=str(dest), file_hash=file_hash, status=status,
         )
+        if available_at is not None:
+            doc.available_at = available_at
         self.db.commit()
-        logger.info("Ingesting document_id=%s filename=%s app=%s", doc.id, filename, application_id)
+        return doc
 
-        try:
-            # 6. Loader -> Cleaner -> Chunker
-            pieces = parse_document(dest, file_type, self.settings.chunk_size,
-                        self.settings.chunk_overlap, self.token_counter)
-            if not pieces:
-                raise EmptyDocumentError(f"No text extracted from '{filename}' (scanned/image-only file?)")
+    def process_document(self, doc: Document) -> int:
+        """
+        Bước 6-8: parse -> chunk -> embed -> thêm chunks vào session. Trả về số chunk.
+        KHÔNG đổi status, KHÔNG commit: người gọi (ingest_file hoặc worker) quyết định
+        """
+        # 6. Loader -> Cleaner -> Chunker
+        pieces = parse_document(Path(doc.storage_path), doc.file_type, self.settings.chunk_size,
+                    self.settings.chunk_overlap, self.token_counter, 
+                    strategy=self.settings.chunk_strategy,
+                    min_tokens=self.settings.chunk_min_tokens,
+                    header=self.settings.chunk_section_header)
+        if not pieces:
+            raise EmptyDocumentError(f"No text extracted from '{doc.filename}' (scanned/image-only file?)")
 
-            # 7 . Embedding (Phase 3)
-            vectors = self._embed([p.text for p in pieces])
-            
-            # 8. Metadata enrichment + lưu chunks 
-            chunks = [
-                Chunk(
-                    document_id = doc.id,
-                    application_id = application_id,
-                    chunk_index = p.chunk_index,
-                    text = p.text,
-                    page = p.page,
-                    embedding = vector,
-                    metadata_ = {
-                        "document_id": str(doc.id),
-                        "application_id": application_id,
-                        "source": filename,
-                        "file_type": file_type,
-                        "page": p.page,
-                        
-                        "chunk_index": p.chunk_index,
-                        "char_count": len(p.text),
-                        "token_count": p.token_count,
-                    }
-                )
-                for p, vector in zip(pieces, vectors, strict=True)      # strict = True, đảm bảo số vector đúng bằng số chunk. Lệch báo lỗi 
-            ]
-            doc_repo.add_chunks(self.db, chunks)
+        # 7. Embedding (Phase 3)
+        vectors = self._embed([p.text for p in pieces])
 
-            # 9. Hoàn tất
-            doc.status = DocumentStatus.READY
-            self.db.commit()
-            logger.info("Document %s READY with %d chunks", doc.id, len(chunks))
-            return doc
+        # 8. Metadata enrichment + lưu chunks
+        chunks = [
+            Chunk(
+                document_id = doc.id,
+                application_id = doc.application_id,
+                chunk_index = p.chunk_index,
+                text = p.text,
+                page = p.page,
+                embedding = vector,
+                metadata_ = {
+                    "document_id": str(doc.id),
+                    "application_id": doc.application_id,
+                    "source": doc.filename,
+                    "file_type": doc.file_type,
+                    "page": p.page,
+                    "chunk_index": p.chunk_index,
+                    "char_count": len(p.text),
+                    "token_count": p.token_count,
+                }
+            )
+            for p, vector in zip(pieces, vectors, strict=True)      # strict = True, đảm bảo số vector đúng bằng số chunk. Lệch báo lỗi
+        ]
+        doc_repo.add_chunks(self.db, chunks)
+        return len(chunks)
 
-        except Exception as exc:
-            self.db.rollback()
-            failed = self.db.get(Document, doc.id)
-            if failed is not None:
-                failed.status = DocumentStatus.FAILED
-                failed.error_message = str(exc)[:1000]
-                self.db.commit()
-            logger.exception("Document %s FAILED", doc.id)      # logger.exception cho biết xem lỗi ở đâu 
-            raise
-
-
-    def ingest_upload(self, application_id: str, fileobj: BinaryIO, filename: str) -> Document:
+    def ingest_upload(self, application_id: str, fileobj: BinaryIO, filename: str, background: bool = False) -> Document:
         """
         Nạp file người dùng uplo (UploadFile.file của FastAPI).
 
@@ -213,6 +244,8 @@ class DocumentService:
                     if written > max_bytes:
                         raise FileTooLargeError(f"'{safe_name}' is larger than {self.settings.max_upload_mb}MB")
                     out.write(block)
+            if background:          # Phase 12a: chỉ xếp hàng, worker xử lý sau
+                return self.submit_file(application_id, tmp_path, filename=safe_name)
             return self.ingest_file(application_id, tmp_path, filename=safe_name)
 
     def list_documents(self, application_id: str) -> list[Document]:
@@ -238,6 +271,22 @@ class DocumentService:
         # (Tên file = hash, duy nhất trong application -> không có document nào khác dùng chung file này.)
         storage_path.unlink(missing_ok=True)
         logger.info("Deleted document %s (app=%s)", document_id, application_id)
+
+
+    def reembed_all_chunks(self, application_id: str) -> int:
+        """Embed lại TOÀN BỘ chunk của application bằng embedder hiện tại (khi đổi provider/model).
+
+        Gọi API cho tất cả trước, rồi mới gán và commit MỘT lần: nếu lỗi giữa chừng (hết quota,
+        mạng) thì DB giữ nguyên vector cũ, không bị nửa model này nửa model kia.
+        """
+        chunks = doc_repo.list_all_chunks(self.db, application_id)
+        if not chunks:
+            return 0
+        vectors = self._embed([c.text for c in chunks])
+        for chunk, vector in zip(chunks, vectors, strict=True):
+            chunk.embedding = vector
+        self.db.commit()
+        return len(chunks)
 
     def embed_missing_chunks(self, application_id: str) -> int:
         """Embed các chunk còn thiếu vector. Trả về số chunk đã embed"""

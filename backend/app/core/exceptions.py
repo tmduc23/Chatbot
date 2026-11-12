@@ -49,3 +49,38 @@ class ChatSessionNotFoundError(AppError):
 class InvalidQuestionError(AppError, ValueError):
     """Câu hỏi rỗng hoặc quá dài.                         -> HTTP 422
     Kế thừa thêm ValueError để code/test cũ (pytest.raises(ValueError)) vẫn đúng."""
+
+# ---- Đăng nhập + phân quyền (Phase 12b) ----
+
+class AuthenticationError(AppError):
+    """Chưa đăng nhập, token sai/hết hạn, sai email hoặc mật khẩu.  -> HTTP 401 ("bạn là ai?")"""
+
+
+class PermissionDeniedError(AppError):
+    """Đã đăng nhập nhưng không đủ vai trò cho việc này.          -> HTTP 403 ("bạn không được làm việc này")"""
+
+
+class AuthDisabledError(AppError):
+    """Gọi /auth/* khi AUTH_ENABLED=false.                        -> HTTP 404"""
+
+
+class UserAlreadyExistsError(AppError):
+    """Tạo user với email đã có.                                  -> HTTP 409"""
+
+
+class UserNotFoundError(AppError):
+    """Email không tồn tại (dùng trong scripts/manage_users.py)."""
+
+
+class WeakPasswordError(AppError, ValueError):
+    """Mật khẩu quá ngắn.                                         -> HTTP 422"""
+
+# ---- Rate limiting (Phase 12c) ----
+
+class RateLimitExceededError(AppError):
+    """Gọi quá nhiều lần trong 1 khoảng thời gian.                 -> HTTP 429 + header Retry-After"""
+
+    def __init__(self, message: str, retry_after: int):
+        super().__init__(message)
+        self.retry_after = retry_after   # số giây nên chờ trước khi thử lại
+
